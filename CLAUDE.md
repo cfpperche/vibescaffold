@@ -57,6 +57,8 @@ Deteccao automatica: se CLAUDE.md existe no cwd, vs abre chat direto.
 - internal/tui/views/chat.go — chat persistente com streaming
 - internal/tui/views/agent.go — seletor de agente LLM
 - internal/chat/ — sessao, runner, contexto, comandos
+- internal/onboarding/ — dados dos arquivos MD, controle de first-run
+- internal/tui/views/onboarding.go — tela de onboarding navegavel
 - internal/agent/detector.go — detecta binarios instalados (claude, codex, gemini, ollama, aider)
 - internal/agent/launcher.go — lanca agente com contexto injetado
 - internal/scaffold/ — logica de geracao de projetos

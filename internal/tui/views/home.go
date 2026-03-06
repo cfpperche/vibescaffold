@@ -23,6 +23,7 @@ var menuItems = []menuItem{
 	{"2", "doctor", "health check"},
 	{"3", "status", "roadmap"},
 	{"4", "agent", "selecionar agente LLM"},
+	{"5", "onboarding", "como funciona"},
 }
 
 type HomeModel struct {
@@ -74,6 +75,8 @@ func (m HomeModel) Update(msg tea.Msg) (HomeModel, tea.Cmd) {
 			return m, func() tea.Msg { return NavigateMsg{Target: "status"} }
 		case "4":
 			return m, func() tea.Msg { return NavigateMsg{Target: "agent"} }
+		case "5":
+			return m, func() tea.Msg { return NavigateMsg{Target: "onboarding"} }
 		}
 	}
 	return m, nil
@@ -130,7 +133,7 @@ func (m HomeModel) View() string {
 	b.WriteString(styles.Success.Render("● " + agentName))
 	b.WriteString("\n")
 
-	b.WriteString(components.Footer("  [1-4] selecionar  [↑↓] navegar  [enter] confirmar  [q] sair"))
+	b.WriteString(components.Footer("  [1-5] selecionar  [↑↓] navegar  [enter] confirmar  [q] sair"))
 
 	return b.String()
 }

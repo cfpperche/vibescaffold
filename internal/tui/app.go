@@ -6,6 +6,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/cfpperche/vibescaffold/internal/chat"
+	"github.com/cfpperche/vibescaffold/internal/onboarding"
 	"github.com/cfpperche/vibescaffold/internal/tui/views"
 )
 
@@ -18,6 +19,7 @@ const (
 	viewStatus
 	viewAgent
 	viewChat
+	viewOnboarding
 )
 
 type Model struct {
@@ -30,16 +32,22 @@ type Model struct {
 	status      views.StatusModel
 	agent       views.AgentModel
 	chat        views.ChatModel
+	onboarding  views.OnboardingModel
 }
 
 func New() Model {
+	startView := viewHome
+	if !onboarding.HasSeen() {
+		startView = viewOnboarding
+	}
 	return Model{
-		currentView: viewHome,
+		currentView: startView,
 		home:        views.NewHome(),
 		init:        views.NewInit(),
 		doctor:      views.NewDoctor(),
 		status:      views.NewStatus(),
 		agent:       views.NewAgent(),
+		onboarding:  views.NewOnboarding(),
 	}
 }
 
@@ -75,6 +83,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.status.SetSize(msg.Width, msg.Height)
 		m.agent.SetSize(msg.Width, msg.Height)
 		m.chat.SetSize(msg.Width, msg.Height)
+		m.onboarding.SetSize(msg.Width, msg.Height)
 		return m, nil
 
 	case tea.KeyMsg:
@@ -110,8 +119,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.agent.SetSize(m.width, m.height)
 			m.currentView = viewAgent
 			return m, nil
-		case "chat":
-			return m, nil // chat is entered via EnterChatMsg
+		case "onboarding":
+			m.onboarding = views.NewOnboarding()
+			m.onboarding.SetSize(m.width, m.height)
+			m.currentView = viewOnboarding
+			return m, nil
 		}
 
 	case views.EnterChatMsg:
@@ -123,7 +135,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, m.chat.Init()
 
 	case views.LaunchAgentMsg:
-		// Suspend TUI, launch agent, then resume
 		return m, tea.ExecProcess(
 			launchAgentCmd(msg),
 			func(err error) tea.Msg {
@@ -146,6 +157,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.agent, cmd = m.agent.Update(msg)
 	case viewChat:
 		m.chat, cmd = m.chat.Update(msg)
+	case viewOnboarding:
+		m.onboarding, cmd = m.onboarding.Update(msg)
 	}
 	return m, cmd
 }
@@ -162,6 +175,8 @@ func (m Model) View() string {
 		return m.agent.View()
 	case viewChat:
 		return m.chat.View()
+	case viewOnboarding:
+		return m.onboarding.View()
 	default:
 		return m.home.View()
 	}
