@@ -16,7 +16,104 @@ type MDFile struct {
 	AgentFills    []string
 }
 
+type Category struct {
+	Name  string
+	Files []string
+}
+
+var Categories = []Category{
+	{"Raiz do projeto", []string{"README.md", "CHANGELOG.md", "LICENSE", "CODE_OF_CONDUCT.md", ".editorconfig"}},
+	{"Claude Code", []string{"CLAUDE.md", ".claude/settings.json", ".claude/hooks/", ".claude/commands/"}},
+	{"Documentacao", []string{"docs/CONTEXT.md", "docs/ROADMAP.md", "docs/ARCHITECTURE.md", "docs/GLOSSARY.md", "docs/TESTING.md", "docs/DEPLOYMENT.md"}},
+	{"Requisitos", []string{"docs/requirements/SRS.md", "docs/requirements/RF.md", "docs/requirements/RNF.md", "docs/requirements/USER_STORIES.md", "docs/requirements/USE_CASES.md"}},
+	{"Decisoes", []string{"docs/adr/0001-stack.md"}},
+	{"GitHub", []string{".github/workflows/ci.yml", ".github/workflows/release.yml", ".github/dependabot.yml", ".github/PULL_REQUEST_TEMPLATE.md", ".github/ISSUE_TEMPLATE/bug_report.md", ".github/ISSUE_TEMPLATE/feature_request.md"}},
+	{"Qualidade", []string{".pre-commit-config.yaml", "CONTRIBUTING.md", "SECURITY.md"}},
+	{"Scripts", []string{"scripts/setup.sh"}},
+}
+
+// FileMap provides fast lookup by path.
+var FileMap map[string]MDFile
+
+func init() {
+	FileMap = make(map[string]MDFile, len(Files))
+	for _, f := range Files {
+		FileMap[f.Path] = f
+	}
+}
+
 var Files = []MDFile{
+	// --- Raiz do projeto ---
+	{
+		Path:        "README.md",
+		FillLevel:   FilledByScaffold,
+		Description: "Porta de entrada do projeto — primeiro arquivo lido por qualquer pessoa ou agente",
+		ScaffoldFills: []string{
+			"Nome, descricao e tagline do projeto",
+			"Tabela da stack tecnica",
+			"Instrucoes de setup (bash scripts/setup.sh)",
+			"Tabela de portas dos servicos",
+			"Comandos uteis (make up, make db, etc)",
+			"Tabela do roadmap resumido",
+			"Licenca",
+		},
+		AgentFills: []string{
+			"Badges de CI, cobertura e versao conforme configurados",
+			"Screenshots e demos quando o projeto tiver interface",
+			"Exemplos de uso da API quando implementada",
+			"Documentacao de variaveis de ambiente reais",
+		},
+	},
+	{
+		Path:        "CHANGELOG.md",
+		FillLevel:   FilledPartial,
+		Description: "Historico de versoes seguindo Keep a Changelog + Semantic Versioning",
+		ScaffoldFills: []string{
+			"Secao Unreleased com itens do scaffold inicial",
+			"Versao 0.1.0-alpha com data",
+			"Estrutura de secoes (Added, Changed, Fixed, Removed)",
+		},
+		AgentFills: []string{
+			"Entrada a cada release com o que foi adicionado",
+			"Breaking changes documentados",
+			"Migracao de versoes quando necessario",
+		},
+	},
+	{
+		Path:        "LICENSE",
+		FillLevel:   FilledByScaffold,
+		Description: "Licenca do projeto",
+		ScaffoldFills: []string{
+			"Licenca proprietaria ou MIT baseado na escolha no wizard",
+			"Copyright com nome do autor e ano",
+		},
+		AgentFills: []string{},
+	},
+	{
+		Path:        "CODE_OF_CONDUCT.md",
+		FillLevel:   FilledByScaffold,
+		Description: "Codigo de conduta para contribuidores",
+		ScaffoldFills: []string{
+			"Contributor Covenant 2.1",
+			"Contato para reporte de violacoes",
+		},
+		AgentFills: []string{},
+	},
+	{
+		Path:        ".editorconfig",
+		FillLevel:   FilledByScaffold,
+		Description: "Configuracao de indentacao e encoding para todos os editores e agentes",
+		ScaffoldFills: []string{
+			"Regras globais: LF, UTF-8, trim whitespace",
+			"Regras por linguagem: Go (tabs), TS/JS (2 spaces), Python/C++ (4 spaces)",
+			"Makefile e scripts: tabs obrigatorio",
+		},
+		AgentFills: []string{
+			"Regras adicionais conforme novas linguagens forem adicionadas",
+		},
+	},
+
+	// --- Claude Code ---
 	{
 		Path:        "CLAUDE.md",
 		FillLevel:   FilledByScaffold,
@@ -35,6 +132,48 @@ var Files = []MDFile{
 			"Notas sobre dependencias e integracoes",
 		},
 	},
+	{
+		Path:        ".claude/settings.json",
+		FillLevel:   FilledByScaffold,
+		Description: "Permissoes e configuracoes do Claude Code",
+		ScaffoldFills: []string{
+			"Lista de comandos permitidos (git, make, docker, npm...)",
+			"Lista de comandos bloqueados",
+			"Variaveis de ambiente do projeto",
+		},
+		AgentFills: []string{
+			"Permissoes adicionais conforme o projeto necessita",
+		},
+	},
+	{
+		Path:        ".claude/hooks/",
+		FillLevel:   FilledByScaffold,
+		Description: "Executa antes de cada tool call do agente",
+		ScaffoldFills: []string{
+			"Bloqueio de comandos perigosos",
+			"Log de tool calls para auditoria",
+		},
+		AgentFills: []string{
+			"Validacoes especificas do projeto",
+			"Checks de qualidade automaticos",
+		},
+	},
+	{
+		Path:        ".claude/commands/",
+		FillLevel:   FilledByScaffold,
+		Description: "Comandos customizados (/test /review /ship /commit)",
+		ScaffoldFills: []string{
+			"/test  — roda testes e reporta cobertura",
+			"/review — code review do diff atual",
+			"/ship  — testa + commit + push",
+			"/commit — commit com conventional commits",
+		},
+		AgentFills: []string{
+			"Comandos especificos do projeto conforme necessidade",
+		},
+	},
+
+	// --- Documentacao ---
 	{
 		Path:        "docs/CONTEXT.md",
 		FillLevel:   FilledByScaffold,
@@ -84,21 +223,56 @@ var Files = []MDFile{
 		},
 	},
 	{
-		Path:        "docs/adr/0001-stack.md",
+		Path:        "docs/GLOSSARY.md",
 		FillLevel:   FilledPartial,
-		Description: "Architecture Decision Record — decisao da stack tecnologica",
+		Description: "Glossario de termos tecnicos e de dominio do projeto",
 		ScaffoldFills: []string{
-			"Status: Aceito",
-			"Stack escolhida no wizard",
-			"Data da decisao",
+			"Estrutura do arquivo com secoes por letra",
+			"Termos tecnicos da stack escolhida",
 		},
 		AgentFills: []string{
-			"Contexto detalhado do porque da escolha",
-			"Alternativas consideradas e por que foram descartadas",
-			"Consequencias e trade-offs da decisao",
-			"ADRs subsequentes para outras decisoes",
+			"Termos de dominio especificos do negocio",
+			"Acronimos e siglas usados no codebase",
+			"Definicoes de conceitos arquiteturais do projeto",
+			"Linguagem ubiqua do DDD se selecionado",
 		},
 	},
+	{
+		Path:        "docs/TESTING.md",
+		FillLevel:   FilledPartial,
+		Description: "Estrategia de testes do projeto",
+		ScaffoldFills: []string{
+			"Piramide de testes: unit, integration, e2e",
+			"Cobertura minima configurada (80%)",
+			"Comandos para rodar cada tipo de teste",
+			"Test runner baseado na stack escolhida",
+		},
+		AgentFills: []string{
+			"Estrategias especificas para cada modulo",
+			"Fixtures e mocks documentados",
+			"Testes de carga e performance quando implementados",
+			"Como testar componentes criticos",
+		},
+	},
+	{
+		Path:        "docs/DEPLOYMENT.md",
+		FillLevel:   FilledPartial,
+		Description: "Guia de deploy em producao",
+		ScaffoldFills: []string{
+			"Requisitos de servidor",
+			"Variaveis de ambiente obrigatorias",
+			"Comandos de deploy",
+			"Como fazer rollback",
+		},
+		AgentFills: []string{
+			"Configuracao real da infraestrutura quando provisionada",
+			"IaC (Terraform/Pulumi) documentado",
+			"Monitoramento e alertas quando configurados",
+			"Runbooks de incidentes",
+		},
+	},
+
+	// --- Requisitos ---
 	{
 		Path:        "docs/requirements/SRS.md",
 		FillLevel:   FilledByAgent,
@@ -114,45 +288,84 @@ var Files = []MDFile{
 		},
 	},
 	{
-		Path:        ".claude/settings.json",
-		FillLevel:   FilledByScaffold,
-		Description: "Permissoes e configuracoes do Claude Code",
+		Path:        "docs/requirements/RF.md",
+		FillLevel:   FilledPartial,
+		Description: "Requisitos Funcionais detalhados — o que o sistema deve fazer",
 		ScaffoldFills: []string{
-			"Lista de comandos permitidos (git, make, docker, npm...)",
-			"Lista de comandos bloqueados",
-			"Variaveis de ambiente do projeto",
+			"Template padrao por requisito (prioridade, status, descricao, entrada, saida)",
+			"RF-001 placeholder para o primeiro requisito",
 		},
 		AgentFills: []string{
-			"Permissoes adicionais conforme o projeto necessita",
+			"Requisitos funcionais completos baseados nas features implementadas",
+			"Status atualizado (Planejado → Em desenvolvimento → Concluido)",
+			"Regras de negocio especificas descobertas",
+			"Relacionamentos entre requisitos",
 		},
 	},
 	{
-		Path:        ".claude/hooks/",
-		FillLevel:   FilledByScaffold,
-		Description: "Executa antes de cada tool call do agente",
+		Path:        "docs/requirements/RNF.md",
+		FillLevel:   FilledPartial,
+		Description: "Requisitos Nao-Funcionais — como o sistema opera",
 		ScaffoldFills: []string{
-			"Bloqueio de comandos perigosos",
-			"Log de tool calls para auditoria",
+			"Secoes: Performance, Seguranca, Escalabilidade, Confiabilidade",
+			"Valores padrao (p95 < 200ms, uptime 99.5%, etc)",
 		},
 		AgentFills: []string{
-			"Validacoes especificas do projeto",
-			"Checks de qualidade automaticos",
+			"Metricas reais baseadas em testes de carga",
+			"Requisitos de seguranca especificos do dominio",
+			"SLAs definidos com o produto",
 		},
 	},
 	{
-		Path:        ".claude/commands/",
-		FillLevel:   FilledByScaffold,
-		Description: "Comandos customizados (/test /review /ship /commit)",
+		Path:        "docs/requirements/USER_STORIES.md",
+		FillLevel:   FilledByAgent,
+		Description: "Historias de usuario na perspectiva do usuario final",
 		ScaffoldFills: []string{
-			"/test  — roda testes e reporta cobertura",
-			"/review — code review do diff atual",
-			"/ship  — testa + commit + push",
-			"/commit — commit com conventional commits",
+			"Template: Como [usuario], quero [acao], para [beneficio]",
+			"Estrutura de criterios de aceitacao (Given/When/Then)",
+			"Personas identificadas no wizard",
 		},
 		AgentFills: []string{
-			"Comandos especificos do projeto conforme necessidade",
+			"User stories completas baseadas nas features implementadas",
+			"Criterios de aceitacao detalhados",
+			"Historias de edge cases descobertos",
+			"Historias de usuarios admin e moderador",
 		},
 	},
+	{
+		Path:        "docs/requirements/USE_CASES.md",
+		FillLevel:   FilledByAgent,
+		Description: "Casos de uso — interacoes entre atores e o sistema",
+		ScaffoldFills: []string{
+			"Template padrao por caso de uso",
+			"Lista de atores identificados",
+		},
+		AgentFills: []string{
+			"UC-001 a UC-N completos conforme features implementadas",
+			"Fluxos alternativos e excecoes",
+			"Diagramas textuais de sequencia",
+		},
+	},
+
+	// --- Decisoes ---
+	{
+		Path:        "docs/adr/0001-stack.md",
+		FillLevel:   FilledPartial,
+		Description: "Architecture Decision Record — decisao da stack tecnologica",
+		ScaffoldFills: []string{
+			"Status: Aceito",
+			"Stack escolhida no wizard",
+			"Data da decisao",
+		},
+		AgentFills: []string{
+			"Contexto detalhado do porque da escolha",
+			"Alternativas consideradas e por que foram descartadas",
+			"Consequencias e trade-offs da decisao",
+			"ADRs subsequentes para outras decisoes",
+		},
+	},
+
+	// --- GitHub ---
 	{
 		Path:        ".github/workflows/ci.yml",
 		FillLevel:   FilledByScaffold,
@@ -166,6 +379,83 @@ var Files = []MDFile{
 			"Steps especificos conforme o projeto cresce",
 			"Deploy automatico quando implementado",
 			"Testes de integracao e e2e",
+		},
+	},
+	{
+		Path:        ".github/workflows/release.yml",
+		FillLevel:   FilledByScaffold,
+		Description: "Release automatico quando tag v*.*.* e criada",
+		ScaffoldFills: []string{
+			"Trigger em tags v*.*.*",
+			"Geracao automatica de release notes do CHANGELOG",
+			"GitHub Release criado automaticamente",
+		},
+		AgentFills: []string{
+			"Build de binarios para multiplas plataformas quando necessario",
+			"Upload de assets da release",
+			"Notificacoes de release",
+		},
+	},
+	{
+		Path:        ".github/dependabot.yml",
+		FillLevel:   FilledByScaffold,
+		Description: "Atualizacoes automaticas de dependencias",
+		ScaffoldFills: []string{
+			"Schedule semanal para Go modules, npm, GitHub Actions",
+			"Limite de PRs abertos simultaneos",
+		},
+		AgentFills: []string{},
+	},
+	{
+		Path:        ".github/PULL_REQUEST_TEMPLATE.md",
+		FillLevel:   FilledByScaffold,
+		Description: "Template padrao para todos os PRs do projeto",
+		ScaffoldFills: []string{
+			"Tipo de mudanca (feat/fix/refactor/docs/chore)",
+			"Secao de descricao",
+			"Como testar",
+			"Checklist: CI verde, testes, CHANGELOG, sem secrets",
+		},
+		AgentFills: []string{
+			"Itens de checklist especificos do projeto conforme evolui",
+		},
+	},
+	{
+		Path:        ".github/ISSUE_TEMPLATE/bug_report.md",
+		FillLevel:   FilledByScaffold,
+		Description: "Template para reportar bugs",
+		ScaffoldFills: []string{
+			"Descricao, passos para reproduzir",
+			"Comportamento esperado vs atual",
+			"Logs e ambiente (OS, GPU, versao)",
+		},
+		AgentFills: []string{},
+	},
+	{
+		Path:        ".github/ISSUE_TEMPLATE/feature_request.md",
+		FillLevel:   FilledByScaffold,
+		Description: "Template para solicitar novas features",
+		ScaffoldFills: []string{
+			"Problema que resolve",
+			"Solucao proposta",
+			"Fase do roadmap que pertence",
+		},
+		AgentFills: []string{},
+	},
+
+	// --- Qualidade ---
+	{
+		Path:        ".pre-commit-config.yaml",
+		FillLevel:   FilledByScaffold,
+		Description: "Hooks que rodam antes de cada commit garantindo qualidade",
+		ScaffoldFills: []string{
+			"trailing-whitespace, end-of-file-fixer, check-yaml",
+			"detect-private-key — nunca commita secrets",
+			"Lint automatico da linguagem principal",
+		},
+		AgentFills: []string{
+			"Hooks especificos do projeto conforme crescem",
+			"Validacoes de schema de banco",
 		},
 	},
 	{
@@ -195,6 +485,24 @@ var Files = []MDFile{
 		AgentFills: []string{
 			"Escopo detalhado baseado nas features implementadas",
 			"Threats especificas do projeto",
+		},
+	},
+
+	// --- Scripts ---
+	{
+		Path:        "scripts/setup.sh",
+		FillLevel:   FilledByScaffold,
+		Description: "Setup do ambiente do zero em um comando",
+		ScaffoldFills: []string{
+			"Copia .env.example → .env",
+			"Instala pre-commit hooks",
+			"Sobe docker compose se presente",
+			"Mensagem final com proximos passos",
+		},
+		AgentFills: []string{
+			"Instalacao de dependencias especificas descobertas",
+			"Configuracoes de ambiente adicionais",
+			"Verificacoes de saude do ambiente",
 		},
 	},
 }
