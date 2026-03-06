@@ -19,11 +19,12 @@ type menuItem struct {
 }
 
 var menuItems = []menuItem{
-	{"1", "init", "scaffold projeto"},
-	{"2", "doctor", "health check"},
-	{"3", "status", "roadmap"},
-	{"4", "agent", "selecionar agente LLM"},
-	{"5", "onboarding", "como funciona"},
+	{"1", "new", "produto + scaffold completo"},
+	{"2", "init", "scaffold tecnico direto"},
+	{"3", "doctor", "health check"},
+	{"4", "status", "roadmap"},
+	{"5", "agent", "selecionar agente LLM"},
+	{"6", "onboarding", "como funciona"},
 }
 
 type HomeModel struct {
@@ -68,14 +69,16 @@ func (m HomeModel) Update(msg tea.Msg) (HomeModel, tea.Cmd) {
 				return NavigateMsg{Target: menuItems[m.cursor].name}
 			}
 		case "1":
-			return m, func() tea.Msg { return NavigateMsg{Target: "init"} }
+			return m, func() tea.Msg { return NavigateMsg{Target: "new"} }
 		case "2":
-			return m, func() tea.Msg { return NavigateMsg{Target: "doctor"} }
+			return m, func() tea.Msg { return NavigateMsg{Target: "init"} }
 		case "3":
-			return m, func() tea.Msg { return NavigateMsg{Target: "status"} }
+			return m, func() tea.Msg { return NavigateMsg{Target: "doctor"} }
 		case "4":
-			return m, func() tea.Msg { return NavigateMsg{Target: "agent"} }
+			return m, func() tea.Msg { return NavigateMsg{Target: "status"} }
 		case "5":
+			return m, func() tea.Msg { return NavigateMsg{Target: "agent"} }
+		case "6":
 			return m, func() tea.Msg { return NavigateMsg{Target: "onboarding"} }
 		}
 	}
@@ -106,7 +109,7 @@ func (m HomeModel) View() string {
 		menuLines = append(menuLines, line)
 	}
 
-	menu := styles.Box.Width(42).Render(strings.Join(menuLines, "\n"))
+	menu := styles.Box.Width(52).Render(strings.Join(menuLines, "\n"))
 	b.WriteString(menu)
 	b.WriteString("\n\n")
 
@@ -133,7 +136,7 @@ func (m HomeModel) View() string {
 	b.WriteString(styles.Success.Render("● " + agentName))
 	b.WriteString("\n")
 
-	b.WriteString(components.Footer("  [1-5] selecionar  [↑↓] navegar  [enter] confirmar  [q] sair"))
+	b.WriteString(components.Footer("  [1-6] selecionar  [↑↓] navegar  [enter] confirmar  [q] sair"))
 
 	return b.String()
 }

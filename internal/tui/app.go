@@ -14,6 +14,7 @@ type view int
 
 const (
 	viewHome view = iota
+	viewProduct
 	viewInit
 	viewDoctor
 	viewStatus
@@ -27,6 +28,7 @@ type Model struct {
 	width       int
 	height      int
 	home        views.HomeModel
+	product     views.ProductModel
 	init        views.InitModel
 	doctor      views.DoctorModel
 	status      views.StatusModel
@@ -78,6 +80,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.width = msg.Width
 		m.height = msg.Height
 		m.home.SetSize(msg.Width, msg.Height)
+		m.product.SetSize(msg.Width, msg.Height)
 		m.init.SetSize(msg.Width, msg.Height)
 		m.doctor.SetSize(msg.Width, msg.Height)
 		m.status.SetSize(msg.Width, msg.Height)
@@ -99,6 +102,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "home":
 			m.currentView = viewHome
 			return m, nil
+		case "new":
+			m.product = views.NewProduct()
+			m.product.SetSize(m.width, m.height)
+			m.currentView = viewProduct
+			return m, m.product.Init()
 		case "init":
 			m.init = views.NewInit()
 			m.init.SetSize(m.width, m.height)
@@ -147,6 +155,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch m.currentView {
 	case viewHome:
 		m.home, cmd = m.home.Update(msg)
+	case viewProduct:
+		m.product, cmd = m.product.Update(msg)
 	case viewInit:
 		m.init, cmd = m.init.Update(msg)
 	case viewDoctor:
@@ -165,6 +175,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Model) View() string {
 	switch m.currentView {
+	case viewProduct:
+		return m.product.View()
 	case viewInit:
 		return m.init.View()
 	case viewDoctor:

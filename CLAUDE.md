@@ -34,6 +34,19 @@ Go + Bubble Tea + Bubbles + Lip Gloss + Huh + Cobra
 msg → Update() → cmd → View()
 Cada view implementa: Init() / Update() / View()
 
+## Fluxo principal
+vs new  → wizard produto (6 rounds) → gera PRODUCT_BRIEF.md + PERSONA.md + VIRAL_LOOP.md
+       → scaffold tecnico (le brief, adapta todos os docs)
+       → chat com agente (contexto completo: produto + tecnico)
+
+vs init → scaffold tecnico direto (sem wizard de produto)
+
+## Pacotes de produto
+- internal/product/brief/brief.go      → estrutura de dados do brief
+- internal/product/brief/generator.go  → gera os arquivos MD
+- internal/product/wizard/wizard.go    → wizard data + conversao para Brief
+- internal/tui/views/product.go        → wizard interativo com huh (6 rounds)
+
 ## Arquitetura do Chat
 
 O chat e o coracao do produto. Apos init, o terminal vira
@@ -54,6 +67,7 @@ Deteccao automatica: se CLAUDE.md existe no cwd, vs abre chat direto.
 ## Estrutura
 - cmd/vs/main.go — entry point (detecta projeto → chat ou home)
 - internal/tui/ — modelo principal + views + components + styles
+- internal/tui/views/product.go — wizard de produto (vs new)
 - internal/tui/views/chat.go — chat persistente com streaming
 - internal/tui/views/agent.go — seletor de agente LLM
 - internal/chat/ — sessao, runner, contexto, comandos

@@ -22,6 +22,7 @@ type Category struct {
 }
 
 var Categories = []Category{
+	{"Produto", []string{"docs/PRODUCT_BRIEF.md", "docs/PERSONA.md", "docs/VIRAL_LOOP.md"}},
 	{"Raiz do projeto", []string{"README.md", "CHANGELOG.md", "LICENSE", "CODE_OF_CONDUCT.md", ".editorconfig"}},
 	{"Claude Code", []string{"CLAUDE.md", ".claude/settings.json", ".claude/hooks/", ".claude/commands/"}},
 	{"Documentacao", []string{"docs/CONTEXT.md", "docs/ROADMAP.md", "docs/ARCHITECTURE.md", "docs/GLOSSARY.md", "docs/TESTING.md", "docs/DEPLOYMENT.md"}},
@@ -43,6 +44,60 @@ func init() {
 }
 
 var Files = []MDFile{
+	// --- Produto ---
+	{
+		Path:        "docs/PRODUCT_BRIEF.md",
+		FillLevel:   FilledByScaffold,
+		Description: "Brief completo do produto — hook, loop, share trigger, viral loop, monetizacao",
+		ScaffoldFills: []string{
+			"Hook: por que alguem tenta na primeira vez",
+			"Loop: Day 1 / Day 7 / Day 30 / Day 90",
+			"Share Trigger: momento exato que gera compartilhamento",
+			"Mecanicas de engajamento selecionadas",
+			"Modelo de monetizacao",
+			"Teste 'mostre pra sua mae'",
+			"Riscos e mitigacoes",
+		},
+		AgentFills: []string{
+			"Refinamento das mecanicas apos validacao com usuarios reais",
+			"Atualizacao do loop conforme metricas reais de retencao",
+			"Novos riscos descobertos durante o desenvolvimento",
+			"Ajustes de monetizacao baseados em feedback",
+		},
+	},
+	{
+		Path:        "docs/PERSONA.md",
+		FillLevel:   FilledPartial,
+		Description: "Personas do produto — quem usa, como, e por que",
+		ScaffoldFills: []string{
+			"Publico primario com comportamentos e motivacoes",
+			"Publico crossover",
+			"Anti-persona (quem NAO e o usuario)",
+			"Jobs-to-be-done por persona",
+		},
+		AgentFills: []string{
+			"Personas refinadas apos entrevistas com usuarios reais",
+			"Novos segmentos descobertos organicamente",
+			"Comportamentos inesperados observados",
+		},
+	},
+	{
+		Path:        "docs/VIRAL_LOOP.md",
+		FillLevel:   FilledPartial,
+		Description: "Diagrama e analise do loop viral do produto",
+		ScaffoldFills: []string{
+			"Diagrama ASCII do loop viral",
+			"Coeficiente viral estimado (low/medium/high)",
+			"Formatos de share planejados (tweet, story, embed)",
+			"Anti-patterns a evitar",
+		},
+		AgentFills: []string{
+			"K-factor real medido apos launch",
+			"Otimizacoes do loop baseadas em dados",
+			"Novos vetores de share descobertos",
+		},
+	},
+
 	// --- Raiz do projeto ---
 	{
 		Path:        "README.md",
