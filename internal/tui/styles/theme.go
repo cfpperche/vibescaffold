@@ -47,9 +47,4 @@ var (
 		MarginTop(1)
 )
 
-const LogoASCII = ` ██╗   ██╗███████╗
- ██║   ██║██╔════╝
- ██║   ██║███████╗
- ╚██╗ ██╔╝╚════██║
-  ╚████╔╝ ███████║
-   ╚═══╝  ╚══════╝`
+const LogoASCII = `▐▌ vibescaffold`

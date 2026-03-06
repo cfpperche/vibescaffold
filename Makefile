@@ -1,4 +1,4 @@
-.PHONY: dev build install clean test test-v test-update demo demo-quick screenshots
+.PHONY: dev build install clean test test-v test-update demo demo-quick screenshots playground
 
 dev:
 	go run ./cmd/vs
@@ -10,7 +10,7 @@ install:
 	go install ./cmd/vs
 
 clean:
-	rm -rf dist/
+	rm -rf dist/ .playground/
 
 # --- Tests (teatest) ---
 
@@ -23,10 +23,14 @@ test-v:
 test-update:
 	go test ./... -update -timeout 30s
 
+# --- Playground (teste manual do fluxo completo) ---
+# Cria .playground/ limpo, reseta onboarding, roda vs
+playground: build
+	bash scripts/playground.sh
+
 # --- Demos (vhs) ---
-# Requires: vhs, ffmpeg, google-chrome
+# Requires: vhs, ffmpeg
 # Install vhs: go install github.com/charmbracelet/vhs@latest
-# Install ffmpeg: sudo apt install ffmpeg
 
 demo: build
 	mkdir -p demos/screenshots
@@ -38,3 +42,4 @@ demo-quick: build
 screenshots: build
 	mkdir -p demos/screenshots
 	PATH="$(PWD)/dist:$(HOME)/bin:$(PATH)" vhs demos/screenshots.tape
+	PATH="$(PWD)/dist:$(HOME)/bin:$(PATH)" vhs demos/onboarding.tape

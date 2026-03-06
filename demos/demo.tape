@@ -1,5 +1,6 @@
 # VibeScaffold — Full Demo
-# Run: vhs demos/demo.tape
+# Run: make demo
+# Fluxo: onboarding → home → init wizard → scaffold → chat
 
 Output demos/demo.gif
 
@@ -11,48 +12,75 @@ Set Theme "Catppuccin Mocha"
 Set TypingSpeed 60ms
 Set Padding 20
 
-# Start the TUI
+# Setup: dir limpo, reseta onboarding
 Hide
-Type "cd /tmp && mkdir -p vs-demo && cd vs-demo"
+Type "rm -f ~/.vibescaffold/onboarding_seen"
+Enter
+Sleep 500ms
+Type "cd /tmp && rm -rf vs-demo && mkdir vs-demo && cd vs-demo"
 Enter
 Sleep 500ms
 Show
 
+# Inicia o VS
 Type "vs"
 Enter
-Sleep 2s
+Sleep 3s
+Screenshot demos/screenshots/onboarding.png
+
+# Navega pelas categorias do onboarding
+Down
+Sleep 400ms
+Down
+Sleep 400ms
+Down
+Sleep 400ms
+Down
+Sleep 400ms
+Down
+Sleep 400ms
+
+# Colapsa uma categoria
+Enter
+Sleep 1s
+
+# Volta e expande
+Enter
+Sleep 1s
+
+# Sai do onboarding → home
+Type "q"
+Sleep 3s
 Screenshot demos/screenshots/home.png
 
-# Navigate to doctor
+# Doctor
 Type "2"
-Sleep 2s
+Sleep 3s
 Screenshot demos/screenshots/doctor.png
 
-# Back to home
-Type "q"
-Sleep 1s
-
-# Navigate to status
-Type "3"
+Escape
 Sleep 2s
-Screenshot demos/screenshots/status.png
 
-# Back to home
-Type "q"
-Sleep 1s
+# Agent selector
+Type "4"
+Sleep 3s
+Screenshot demos/screenshots/agent.png
 
-# Navigate to init wizard
+Escape
+Sleep 2s
+
+# Init wizard
 Type "1"
 Sleep 2s
 Screenshot demos/screenshots/init.png
 
-# Fill in project name
+# Project name
 Type "meu-saas"
 Enter
 Sleep 500ms
 
 # Description
-Type "Plataforma SaaS para gestao"
+Type "Plataforma SaaS para gestao de projetos"
 Enter
 Sleep 500ms
 
@@ -66,11 +94,11 @@ Type "n"
 Enter
 Sleep 1s
 
-# Select project type - SaaS
+# Project type - SaaS (first option)
 Enter
 Sleep 1s
 
-# Select stack
+# Stack - Go + Bubble Tea (first option)
 Enter
 Sleep 1s
 
@@ -80,13 +108,21 @@ Sleep 1s
 
 # Features - accept defaults
 Enter
-Sleep 2s
-
-Screenshot demos/screenshots/done.png
 Sleep 3s
+Screenshot demos/screenshots/done.png
 
-# Quit
-Escape
-Sleep 500ms
-Type "q"
+# Enter para abrir chat
+Enter
+Sleep 3s
+Screenshot demos/screenshots/chat.png
+
+# Digita uma mensagem no chat
+Type "/help"
+Enter
+Sleep 2s
+Screenshot demos/screenshots/chat-help.png
+
+# Sai
+Type "/exit"
+Enter
 Sleep 1s

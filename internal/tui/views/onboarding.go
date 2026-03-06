@@ -11,6 +11,8 @@ import (
 	"github.com/cfpperche/vibescaffold/internal/tui/styles"
 )
 
+const onboardingListHeight = 20 // visible rows in the file list
+
 // listEntry represents either a category header or a file in the flat list.
 type listEntry struct {
 	isCategory bool
@@ -22,6 +24,7 @@ type OnboardingModel struct {
 	width     int
 	height    int
 	cursor    int
+	scroll    int // scroll offset for the file list
 	entries   []listEntry
 	expanded  map[int]bool // which categories are expanded (by catIdx)
 }
@@ -66,10 +69,12 @@ func (m OnboardingModel) Update(msg tea.Msg) (OnboardingModel, tea.Cmd) {
 		case "up", "k":
 			if m.cursor > 0 {
 				m.cursor--
+				m.ensureVisible()
 			}
 		case "down", "j":
 			if m.cursor < len(m.entries)-1 {
 				m.cursor++
+				m.ensureVisible()
 			}
 		case "enter", " ":
 			if m.cursor < len(m.entries) {
@@ -77,6 +82,7 @@ func (m OnboardingModel) Update(msg tea.Msg) (OnboardingModel, tea.Cmd) {
 				if e.isCategory {
 					m.expanded[e.catIdx] = !m.expanded[e.catIdx]
 					m.rebuildEntries()
+					m.ensureVisible()
 				}
 			}
 		case "esc", "q":
@@ -96,8 +102,8 @@ func (m OnboardingModel) View() string {
 	b.WriteString(styles.Subtle.Render("  O scaffold cria a estrutura. O agente LLM preenche.\n\n"))
 
 	// Split: left = file list, right = detail panel
-	leftW := 48
-	rightW := 62
+	leftW := 40
+	rightW := 46
 
 	// Build left panel (file list with categories)
 	var listLines []string
@@ -136,16 +142,36 @@ func (m OnboardingModel) View() string {
 				nameStyle = styles.Title
 			}
 			fill := fillIndicator(f.FillLevel)
+			short := f.Path
+			if len(short) > 22 {
+				short = "…" + short[len(short)-21:]
+			}
 			line := fmt.Sprintf("%s%s %s",
 				prefix,
-				nameStyle.Render(fmt.Sprintf("%-28s", f.Path)),
+				nameStyle.Render(fmt.Sprintf("%-22s", short)),
 				fill,
 			)
 			listLines = append(listLines, line)
 		}
 	}
 
-	listContent := strings.Join(listLines, "\n")
+	// Apply scroll window
+	h := m.listHeight()
+	end := m.scroll + h
+	if end > len(listLines) {
+		end = len(listLines)
+	}
+	visibleLines := listLines[m.scroll:end]
+
+	// Scroll indicator
+	if m.scroll > 0 {
+		visibleLines = append([]string{styles.Subtle.Render("  ↑ mais...")}, visibleLines...)
+	}
+	if end < len(listLines) {
+		visibleLines = append(visibleLines, styles.Subtle.Render("  ↓ mais..."))
+	}
+
+	listContent := strings.Join(visibleLines, "\n")
 	listBox := styles.Box.Width(leftW).Render(listContent)
 
 	// Build right panel (detail for selected)
@@ -307,7 +333,27 @@ func fillIndicator(level onboarding.FillLevel) string {
 	}
 }
 
+func (m *OnboardingModel) listHeight() int {
+	// Use terminal height minus header/footer/legend/title overhead (~10 lines)
+	h := m.height - 10
+	if h < onboardingListHeight {
+		h = onboardingListHeight
+	}
+	return h
+}
+
+func (m *OnboardingModel) ensureVisible() {
+	h := m.listHeight()
+	if m.cursor < m.scroll {
+		m.scroll = m.cursor
+	}
+	if m.cursor >= m.scroll+h {
+		m.scroll = m.cursor - h + 1
+	}
+}
+
 func (m *OnboardingModel) SetSize(w, h int) {
 	m.width = w
 	m.height = h
+	m.ensureVisible()
 }

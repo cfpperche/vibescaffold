@@ -6,6 +6,6 @@ import (
 
 func Header() string {
 	logo := styles.Logo.Render(styles.LogoASCII)
-	version := styles.Subtle.Render("  vibescaffold v0.1.0")
-	return logo + version + "\n"
+	version := styles.Subtle.Render("  v0.1.0")
+	return "\n " + logo + version + "\n\n"
 }
