@@ -8,6 +8,8 @@ import (
 	"github.com/cfpperche/vibescaffold/internal/config"
 	"github.com/cfpperche/vibescaffold/internal/tui/components"
 	"github.com/cfpperche/vibescaffold/internal/tui/styles"
+
+	"github.com/cfpperche/vibescaffold/internal/agent"
 )
 
 type menuItem struct {
@@ -20,7 +22,7 @@ var menuItems = []menuItem{
 	{"1", "init", "scaffold projeto"},
 	{"2", "doctor", "health check"},
 	{"3", "status", "roadmap"},
-	{"4", "context", "ver contexto"},
+	{"4", "agent", "selecionar agente LLM"},
 }
 
 type HomeModel struct {
@@ -64,7 +66,7 @@ func (m HomeModel) Update(msg tea.Msg) (HomeModel, tea.Cmd) {
 		case "3":
 			return m, func() tea.Msg { return NavigateMsg{Target: "status"} }
 		case "4":
-			return m, func() tea.Msg { return NavigateMsg{Target: "context"} }
+			return m, func() tea.Msg { return NavigateMsg{Target: "agent"} }
 		}
 	}
 	return m, nil
@@ -106,6 +108,19 @@ func (m HomeModel) View() string {
 		b.WriteString(styles.Warning.Render("  ⚠ "))
 		b.WriteString(styles.Subtle.Render("Nenhum projeto detectado nesta pasta"))
 	}
+	b.WriteString("\n")
+
+	// Active agent
+	appCfg := config.LoadAppConfig()
+	agentName := appCfg.ActiveAgent
+	for _, a := range agent.DefaultAgents() {
+		if a.Key == appCfg.ActiveAgent {
+			agentName = a.Name
+			break
+		}
+	}
+	b.WriteString(styles.Subtle.Render("  Agente: "))
+	b.WriteString(styles.Success.Render("● " + agentName))
 	b.WriteString("\n")
 
 	b.WriteString(components.Footer("  [1-4] selecionar  [↑↓] navegar  [enter] confirmar  [q] sair"))

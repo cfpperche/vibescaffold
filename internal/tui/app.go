@@ -12,6 +12,7 @@ const (
 	viewInit
 	viewDoctor
 	viewStatus
+	viewAgent
 )
 
 type Model struct {
@@ -22,6 +23,7 @@ type Model struct {
 	init        views.InitModel
 	doctor      views.DoctorModel
 	status      views.StatusModel
+	agent       views.AgentModel
 }
 
 func New() Model {
@@ -31,6 +33,7 @@ func New() Model {
 		init:        views.NewInit(),
 		doctor:      views.NewDoctor(),
 		status:      views.NewStatus(),
+		agent:       views.NewAgent(),
 	}
 }
 
@@ -47,6 +50,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.init.SetSize(msg.Width, msg.Height)
 		m.doctor.SetSize(msg.Width, msg.Height)
 		m.status.SetSize(msg.Width, msg.Height)
+		m.agent.SetSize(msg.Width, msg.Height)
 		return m, nil
 
 	case tea.KeyMsg:
@@ -77,11 +81,21 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.status.SetSize(m.width, m.height)
 			m.currentView = viewStatus
 			return m, nil
-		case "context":
-			// context is same as doctor for now
-			m.currentView = viewDoctor
+		case "agent":
+			m.agent = views.NewAgent()
+			m.agent.SetSize(m.width, m.height)
+			m.currentView = viewAgent
 			return m, nil
 		}
+
+	case views.LaunchAgentMsg:
+		// Suspend TUI, launch agent, then resume
+		return m, tea.ExecProcess(
+			launchAgentCmd(msg),
+			func(err error) tea.Msg {
+				return views.NavigateMsg{Target: "home"}
+			},
+		)
 	}
 
 	var cmd tea.Cmd
@@ -94,6 +108,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.doctor, cmd = m.doctor.Update(msg)
 	case viewStatus:
 		m.status, cmd = m.status.Update(msg)
+	case viewAgent:
+		m.agent, cmd = m.agent.Update(msg)
 	}
 	return m, cmd
 }
@@ -106,6 +122,8 @@ func (m Model) View() string {
 		return m.doctor.View()
 	case viewStatus:
 		return m.status.View()
+	case viewAgent:
+		return m.agent.View()
 	default:
 		return m.home.View()
 	}

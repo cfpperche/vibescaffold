@@ -37,6 +37,9 @@ Cada view implementa: Init() / Update() / View()
 ## Estrutura
 - cmd/vs/main.go — entry point
 - internal/tui/ — modelo principal + views + components + styles
+- internal/tui/views/agent.go — seletor de agente LLM
+- internal/agent/detector.go — detecta binarios instalados (claude, codex, gemini, ollama, aider)
+- internal/agent/launcher.go — lanca agente com contexto injetado
 - internal/scaffold/ — logica de geracao de projetos
 - internal/doctor/ — health check
-- internal/config/ — config e deteccao de projeto
+- internal/config/ — config persistida em ~/.vibescaffold/ + deteccao de projeto
