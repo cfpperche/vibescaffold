@@ -1,31 +1,32 @@
 # VibeScaffold — Claude Code
 
-## O que é
-Plataforma web que gera scaffold de projetos para vibecoding.
-Wizard 5 passos → bash script com CLAUDE.md, hooks, docs, CI/CD.
+## O que e
+TUI em Go com Bubble Tea para scaffold de projetos de vibecoding.
+Gerenciador de contexto para Claude Code, Codex CLI, Gemini CLI.
 
 ## Stack
-Vite + React 19 + TypeScript + TanStack Router + Zustand + Tailwind v4
-Hono.js em Cloudflare Workers para server-side
-Runtime: Bun | Linter/Formatter: Biome
+Go + Bubble Tea + Bubbles + Lip Gloss + Huh + Cobra
 
 ## Comandos
-- bun run dev        → desenvolvimento
-- bun run build      → build de produção
-- bun run check      → lint + format (Biome)
-- bun run typecheck  → TypeScript check
+- make dev      → roda a TUI
+- make build    → compila para dist/vs
+- make install  → instala globalmente
+- go test ./... → testa tudo
 
 ## Regras
-1. NUNCA commite sem build passando (bun run build)
-2. NUNCA exponha secrets
-3. SEMPRE git push após git commit
-4. Componentes em src/components/
-5. Estado global em src/stores/ (Zustand)
-6. Rotas em src/routes/ (TanStack Router file-based)
-7. Lógica de negócio em src/lib/
+1. NUNCA commite sem go build passando
+2. Cada view e um sub-modelo Bubble Tea independente
+3. Estilos SEMPRE em internal/tui/styles/theme.go
+4. Logica de negocio NUNCA no pacote tui — vai em internal/scaffold ou internal/doctor
+5. SEMPRE git push apos commit
 
-## Workflow
-Tarefa → lê arquivos → implementa → bun run build → commit → push
+## Arquitetura Bubble Tea
+msg → Update() → cmd → View()
+Cada view implementa: Init() / Update() / View()
 
-## Referência de design
-/mnt/user-data/outputs/vibescaffold-landing.jsx
+## Estrutura
+- cmd/vs/main.go — entry point
+- internal/tui/ — modelo principal + views + components + styles
+- internal/scaffold/ — logica de geracao de projetos
+- internal/doctor/ — health check
+- internal/config/ — config e deteccao de projeto
