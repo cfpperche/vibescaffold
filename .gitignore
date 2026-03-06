@@ -20,4 +20,4 @@ demos/screenshots/
 # Misc
 *.log
 *.local
-vs
+/vs

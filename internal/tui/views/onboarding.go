@@ -6,6 +6,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/cfpperche/vibeforge/internal/i18n"
 	"github.com/cfpperche/vibeforge/internal/onboarding"
 	"github.com/cfpperche/vibeforge/internal/tui/components"
 	"github.com/cfpperche/vibeforge/internal/tui/styles"
@@ -96,9 +97,9 @@ func (m OnboardingModel) View() string {
 	var b strings.Builder
 
 	b.WriteString(components.Header())
-	b.WriteString(styles.Title.Render("  $ help"))
-	b.WriteString(styles.Subtle.Render("  — arquivos e estrutura\n\n"))
-	b.WriteString(styles.Subtle.Render("  Cada arquivo tem um papel. O scaffold cria, o agente completa.\n\n"))
+	b.WriteString(styles.Title.Render("  " + i18n.T("onboarding.title")))
+	b.WriteString(styles.Subtle.Render("  " + i18n.T("onboarding.subtitle") + "\n\n"))
+	b.WriteString(styles.Subtle.Render(i18n.T("onboarding.instruction") + "\n\n"))
 
 	// Split: left = file list, right = detail panel
 	leftW := 40
@@ -164,10 +165,10 @@ func (m OnboardingModel) View() string {
 
 	// Scroll indicator
 	if m.scroll > 0 {
-		visibleLines = append([]string{styles.Subtle.Render("  ↑ mais...")}, visibleLines...)
+		visibleLines = append([]string{styles.Subtle.Render(i18n.T("onboarding.scroll_up"))}, visibleLines...)
 	}
 	if end < len(listLines) {
-		visibleLines = append(visibleLines, styles.Subtle.Render("  ↓ mais..."))
+		visibleLines = append(visibleLines, styles.Subtle.Render(i18n.T("onboarding.scroll_down")))
 	}
 
 	listContent := strings.Join(visibleLines, "\n")
@@ -218,13 +219,13 @@ func (m OnboardingModel) View() string {
 	b.WriteString("\n")
 	b.WriteString(styles.Subtle.Render("  "))
 	b.WriteString(styles.Success.Render("●●●●"))
-	b.WriteString(styles.Subtle.Render(" scaffold  "))
+	b.WriteString(styles.Subtle.Render(i18n.T("onboarding.legend.scaffold")))
 	b.WriteString(styles.Warning.Render("●●○○"))
-	b.WriteString(styles.Subtle.Render(" parcial  "))
+	b.WriteString(styles.Subtle.Render(i18n.T("onboarding.legend.partial")))
 	b.WriteString(agentColor.Render("○○○○"))
-	b.WriteString(styles.Subtle.Render(" agente\n"))
+	b.WriteString(styles.Subtle.Render(i18n.T("onboarding.legend.agent") + "\n"))
 
-	b.WriteString(components.Footer("  [↑↓] navegar  [enter] expandir/colapsar  [q] voltar"))
+	b.WriteString(components.Footer(i18n.T("onboarding.footer")))
 
 	return b.String()
 }
@@ -251,31 +252,31 @@ func (m OnboardingModel) renderCategoryDetail(cat onboarding.Category, w int) st
 		}
 	}
 
-	lines = append(lines, fmt.Sprintf("%s %d arquivos",
-		styles.Subtle.Render("Total:"),
-		len(cat.Files),
+	lines = append(lines, fmt.Sprintf("%s%s",
+		styles.Subtle.Render(i18n.T("onboarding.total")),
+		i18n.TF("onboarding.files_count", len(cat.Files)),
 	))
 	if scaffold > 0 {
-		lines = append(lines, fmt.Sprintf("  %s %d preenchidos pelo scaffold",
+		lines = append(lines, i18n.TF("onboarding.scaffold_filled",
 			styles.Success.Render("●●●●"),
 			scaffold,
 		))
 	}
 	if partial > 0 {
-		lines = append(lines, fmt.Sprintf("  %s %d parciais",
+		lines = append(lines, i18n.TF("onboarding.partial_filled",
 			styles.Warning.Render("●●○○"),
 			partial,
 		))
 	}
 	if agent > 0 {
-		lines = append(lines, fmt.Sprintf("  %s %d preenchidos pelo agente",
+		lines = append(lines, i18n.TF("onboarding.agent_filled",
 			agentColor.Render("○○○○"),
 			agent,
 		))
 	}
 
 	lines = append(lines, "")
-	lines = append(lines, styles.Subtle.Render("Arquivos:"))
+	lines = append(lines, styles.Subtle.Render(i18n.T("onboarding.files_header")))
 	for _, path := range cat.Files {
 		lines = append(lines, styles.Subtle.Render("  "+path))
 	}
@@ -295,7 +296,7 @@ func (m OnboardingModel) renderFileDetail(f onboarding.MDFile, w int) string {
 	lines = append(lines, "")
 
 	if len(f.ScaffoldFills) > 0 {
-		lines = append(lines, styles.Success.Render("Criado pelo scaffold:"))
+		lines = append(lines, styles.Success.Render(i18n.T("onboarding.scaffold_section")))
 		for _, s := range f.ScaffoldFills {
 			lines = append(lines, fmt.Sprintf("  %s %s",
 				styles.Success.Render("✓"),
@@ -306,7 +307,7 @@ func (m OnboardingModel) renderFileDetail(f onboarding.MDFile, w int) string {
 	}
 
 	if len(f.AgentFills) > 0 {
-		lines = append(lines, agentColor.Render("Preenchido pelo agente LLM:"))
+		lines = append(lines, agentColor.Render(i18n.T("onboarding.agent_section")))
 		for _, s := range f.AgentFills {
 			lines = append(lines, fmt.Sprintf("  %s %s",
 				agentColor.Render("◈"),

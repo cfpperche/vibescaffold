@@ -8,17 +8,11 @@ import (
 	"strings"
 
 	"github.com/cfpperche/vibeforge/internal/config"
+	"github.com/cfpperche/vibeforge/internal/i18n"
 )
 
-var principleLabels = map[string]string{
-	"tdd":              "Test-Driven Development — escreva testes antes do codigo",
-	"clean-arch":       "Clean Architecture — separacao de camadas",
-	"solid":            "SOLID — principios de design OO",
-	"12-factor":        "12-Factor App — boas praticas de deploy",
-	"ddd":              "Domain-Driven Design — modelagem pelo dominio",
-	"cqrs":             "CQRS — separacao de leitura e escrita",
-	"event-sourcing":   "Event Sourcing — historico de eventos como fonte de verdade",
-	"hexagonal":        "Hexagonal Architecture — ports and adapters",
+func principleLabel(key string) string {
+	return i18n.T("scaffold.principle." + key)
 }
 
 func Scaffold(cfg config.Config, targetDir string) ([]string, error) {
@@ -151,7 +145,7 @@ func Scaffold(cfg config.Config, targetDir string) ([]string, error) {
 	if err := runInDir(root, "git", "add", "-A"); err != nil {
 		return created, fmt.Errorf("git add: %w", err)
 	}
-	if err := runInDir(root, "git", "commit", "-m", "Initial scaffold by VibeForge"); err != nil {
+	if err := runInDir(root, "git", "commit", "-m", i18n.T("scaffold.commit_msg")); err != nil {
 		return created, fmt.Errorf("git commit: %w", err)
 	}
 
@@ -166,15 +160,15 @@ func Scaffold(cfg config.Config, targetDir string) ([]string, error) {
 func generateClaudeMd(cfg config.Config) string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "# %s\n\n", cfg.Name)
-	fmt.Fprintf(&b, "## O que e\n%s\n\n", cfg.Desc)
-	fmt.Fprintf(&b, "## Tipo\n%s\n\n", cfg.Type)
-	fmt.Fprintf(&b, "## Stack\n%s\n\n", cfg.Stack)
+	fmt.Fprintf(&b, "%s\n%s\n\n", i18n.T("scaffold.section.what"), cfg.Desc)
+	fmt.Fprintf(&b, "%s\n%s\n\n", i18n.T("scaffold.section.type"), cfg.Type)
+	fmt.Fprintf(&b, "%s\n%s\n\n", i18n.T("scaffold.section.stack"), cfg.Stack)
 
 	if len(cfg.Principles) > 0 {
-		b.WriteString("## Principios\n")
+		b.WriteString(i18n.T("scaffold.section.principles") + "\n")
 		for i, p := range cfg.Principles {
-			label, ok := principleLabels[p]
-			if !ok {
+			label := principleLabel(p)
+			if label == "scaffold.principle."+p {
 				label = p
 			}
 			fmt.Fprintf(&b, "%d. %s\n", i+1, label)
@@ -182,23 +176,23 @@ func generateClaudeMd(cfg config.Config) string {
 		b.WriteString("\n")
 	}
 
-	b.WriteString("## Regras\n")
-	b.WriteString("1. NUNCA commite sem build passando\n")
-	b.WriteString("2. NUNCA exponha secrets\n")
-	b.WriteString("3. SEMPRE git push apos commit\n\n")
-	b.WriteString("## Workflow\nTarefa -> le arquivos -> implementa -> build -> commit -> push\n")
+	b.WriteString(i18n.T("scaffold.section.rules") + "\n")
+	b.WriteString(i18n.T("scaffold.rule.1") + "\n")
+	b.WriteString(i18n.T("scaffold.rule.2") + "\n")
+	b.WriteString(i18n.T("scaffold.rule.3") + "\n\n")
+	b.WriteString(i18n.T("scaffold.section.workflow") + "\n" + i18n.T("scaffold.workflow") + "\n")
 
 	return b.String()
 }
 
 func generateContext(cfg config.Config) string {
 	var b strings.Builder
-	fmt.Fprintf(&b, "# %s — Contexto\n\n", cfg.Name)
-	fmt.Fprintf(&b, "## Produto\n%s\n\n", cfg.Desc)
-	fmt.Fprintf(&b, "## Tipo\n%s\n\n", cfg.Type)
-	fmt.Fprintf(&b, "## Stack\n%s\n\n", cfg.Stack)
+	fmt.Fprintf(&b, "%s\n\n", i18n.TF("scaffold.context_header", cfg.Name))
+	fmt.Fprintf(&b, "%s\n%s\n\n", i18n.T("scaffold.section.product"), cfg.Desc)
+	fmt.Fprintf(&b, "%s\n%s\n\n", i18n.T("scaffold.section.type"), cfg.Type)
+	fmt.Fprintf(&b, "%s\n%s\n\n", i18n.T("scaffold.section.stack"), cfg.Stack)
 	if cfg.Author != "" {
-		fmt.Fprintf(&b, "## Autor\n%s\n", cfg.Author)
+		fmt.Fprintf(&b, "%s\n%s\n", i18n.T("scaffold.section.author"), cfg.Author)
 	}
 	return b.String()
 }

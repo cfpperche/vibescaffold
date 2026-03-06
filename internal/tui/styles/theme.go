@@ -1,6 +1,9 @@
 package styles
 
-import "github.com/charmbracelet/lipgloss"
+import (
+	"github.com/charmbracelet/lipgloss"
+	"github.com/cfpperche/vibeforge/internal/i18n"
+)
 
 var (
 	Green   = lipgloss.Color("#39ff14")
@@ -47,4 +50,6 @@ var (
 		MarginTop(1)
 )
 
-const LogoASCII = `▐▌ vibeforge`
+func LogoASCII() string {
+	return i18n.T("app.logo")
+}

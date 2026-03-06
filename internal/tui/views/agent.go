@@ -7,6 +7,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/cfpperche/vibeforge/internal/agent"
 	"github.com/cfpperche/vibeforge/internal/config"
+	"github.com/cfpperche/vibeforge/internal/i18n"
 	"github.com/cfpperche/vibeforge/internal/tui/components"
 	"github.com/cfpperche/vibeforge/internal/tui/styles"
 )
@@ -174,8 +175,8 @@ func (m AgentModel) viewList() string {
 	var b strings.Builder
 
 	b.WriteString(components.Header())
-	b.WriteString(styles.Title.Render("  $ agent"))
-	b.WriteString(styles.Subtle.Render("  — selecionar agente LLM\n\n"))
+	b.WriteString(styles.Title.Render("  " + i18n.T("agent.title")))
+	b.WriteString(styles.Subtle.Render("  " + i18n.T("agent.subtitle") + "\n\n"))
 
 	var lines []string
 	for i, a := range m.agents {
@@ -194,11 +195,11 @@ func (m AgentModel) viewList() string {
 		if a.Installed {
 			ver := a.Version
 			if ver == "" {
-				ver = "instalado"
+				ver = i18n.T("agent.installed")
 			}
 			statusStr = styles.Success.Render("✓ ") + styles.Subtle.Render(ver)
 		} else {
-			statusStr = styles.Error.Render("✗ nao encontrado")
+			statusStr = styles.Error.Render(i18n.T("agent.not_found"))
 		}
 
 		bulletStyle := styles.Subtle
@@ -220,11 +221,11 @@ func (m AgentModel) viewList() string {
 	b.WriteString("\n\n")
 
 	// Active agent status
-	b.WriteString(styles.Subtle.Render("  Agente ativo: "))
+	b.WriteString(styles.Subtle.Render("  " + i18n.T("agent.active_label")))
 	b.WriteString(styles.Success.Render(m.activeAgentName()))
 	b.WriteString("\n")
 
-	b.WriteString(components.Footer("  [↑↓] selecionar  [enter] usar  [i] instalar  [c] ativar  [r] re-detectar  [q] voltar"))
+	b.WriteString(components.Footer(i18n.T("agent.footer")))
 
 	return b.String()
 }
@@ -235,21 +236,21 @@ func (m AgentModel) viewInstallHint() string {
 	hint := agent.InstallHint(selected.Key)
 
 	b.WriteString(components.Header())
-	b.WriteString(styles.Title.Render(fmt.Sprintf("  $ instalar %s", selected.Name)))
+	b.WriteString(styles.Title.Render(i18n.TF("agent.install_title", selected.Name)))
 	b.WriteString("\n\n")
 
 	var lines []string
 	lines = append(lines, "")
 	lines = append(lines, styles.Success.Render("  "+hint))
 	lines = append(lines, "")
-	lines = append(lines, styles.Subtle.Render("  Apos instalar, pressione [r] para detectar"))
-	lines = append(lines, styles.Subtle.Render("  novamente."))
+	lines = append(lines, styles.Subtle.Render(i18n.T("agent.install_hint")))
+	lines = append(lines, styles.Subtle.Render(i18n.T("agent.install_hint2")))
 	lines = append(lines, "")
 
 	b.WriteString(styles.ActiveBox.Width(52).Render(strings.Join(lines, "\n")))
 	b.WriteString("\n")
 
-	b.WriteString(components.Footer("  [r] re-detectar  [q] voltar"))
+	b.WriteString(components.Footer(i18n.T("agent.install_footer")))
 
 	return b.String()
 }
@@ -259,13 +260,13 @@ func (m AgentModel) viewOllamaModels() string {
 	selected := m.agents[m.cursor]
 
 	b.WriteString(components.Header())
-	b.WriteString(styles.Title.Render("  $ ollama — selecionar modelo"))
+	b.WriteString(styles.Title.Render("  " + i18n.T("agent.ollama_title")))
 	b.WriteString("\n\n")
 
 	if len(selected.Models) == 0 {
-		b.WriteString(styles.Warning.Render("  ⚠ Nenhum modelo encontrado\n"))
-		b.WriteString(styles.Subtle.Render("  Execute: ollama pull llama3.2\n"))
-		b.WriteString(components.Footer("  [q] voltar"))
+		b.WriteString(styles.Warning.Render(i18n.T("agent.ollama_no_models") + "\n"))
+		b.WriteString(styles.Subtle.Render(i18n.T("agent.ollama_pull_hint") + "\n"))
+		b.WriteString(components.Footer(i18n.T("agent.back_footer")))
 		return b.String()
 	}
 
@@ -295,7 +296,7 @@ func (m AgentModel) viewOllamaModels() string {
 
 	b.WriteString(styles.Box.Width(52).Render(strings.Join(lines, "\n")))
 	b.WriteString("\n")
-	b.WriteString(components.Footer("  [↑↓] selecionar  [enter] confirmar  [q] voltar"))
+	b.WriteString(components.Footer(i18n.T("agent.ollama_footer")))
 
 	return b.String()
 }

@@ -1,10 +1,11 @@
 package doctor
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/cfpperche/vibeforge/internal/i18n"
 )
 
 type Check struct {
@@ -41,12 +42,12 @@ func Score(checks []Check) (int, int) {
 func fileCheck(path string, required bool) Check {
 	name := path
 	if _, err := os.Stat(path); err == nil {
-		return Check{Name: name, Status: "ok", Detail: "encontrado"}
+		return Check{Name: name, Status: "ok", Detail: i18n.T("doctor.found")}
 	}
 	if required {
-		return Check{Name: name, Status: "fail", Detail: "nao encontrado"}
+		return Check{Name: name, Status: "fail", Detail: i18n.T("doctor.not_found")}
 	}
-	return Check{Name: name, Status: "warn", Detail: "nao encontrado"}
+	return Check{Name: name, Status: "warn", Detail: i18n.T("doctor.not_found")}
 }
 
 func dirCheck(path string, required bool) Check {
@@ -54,14 +55,14 @@ func dirCheck(path string, required bool) Check {
 	if err == nil && info.IsDir() {
 		entries, _ := os.ReadDir(path)
 		if len(entries) > 0 {
-			return Check{Name: path, Status: "ok", Detail: "configurado"}
+			return Check{Name: path, Status: "ok", Detail: i18n.T("doctor.configured")}
 		}
-		return Check{Name: path, Status: "warn", Detail: "vazio"}
+		return Check{Name: path, Status: "warn", Detail: i18n.T("doctor.empty")}
 	}
 	if required {
-		return Check{Name: path, Status: "fail", Detail: "nao encontrado"}
+		return Check{Name: path, Status: "fail", Detail: i18n.T("doctor.not_found")}
 	}
-	return Check{Name: path, Status: "warn", Detail: "nao encontrado"}
+	return Check{Name: path, Status: "warn", Detail: i18n.T("doctor.not_found")}
 }
 
 func ciCheck() Check {
@@ -69,9 +70,9 @@ func ciCheck() Check {
 	yaml, _ := filepath.Glob(".github/workflows/*.yaml")
 	matches = append(matches, yaml...)
 	if len(matches) > 0 {
-		return Check{Name: ".github/workflows/", Status: "ok", Detail: "CI configurado"}
+		return Check{Name: ".github/workflows/", Status: "ok", Detail: i18n.T("doctor.ci_configured")}
 	}
-	return Check{Name: ".github/workflows/", Status: "warn", Detail: "sem CI"}
+	return Check{Name: ".github/workflows/", Status: "warn", Detail: i18n.T("doctor.no_ci")}
 }
 
 func linterCheck() Check {
@@ -91,7 +92,7 @@ func linterCheck() Check {
 			return Check{Name: "Linter", Status: "ok", Detail: name}
 		}
 	}
-	return Check{Name: "Linter", Status: "warn", Detail: "nenhum detectado"}
+	return Check{Name: "Linter", Status: "warn", Detail: i18n.T("doctor.no_linter")}
 }
 
 func testRunnerCheck() Check {
@@ -132,9 +133,9 @@ func testRunnerCheck() Check {
 			if strings.Contains(s, "bun test") {
 				return Check{Name: "Test runner", Status: "ok", Detail: "bun test"}
 			}
-			return Check{Name: "Test runner", Status: "ok", Detail: fmt.Sprintf("encontrado")}
+			return Check{Name: "Test runner", Status: "ok", Detail: i18n.T("doctor.test_found")}
 		}
 	}
 
-	return Check{Name: "Test runner", Status: "warn", Detail: "nenhum detectado"}
+	return Check{Name: "Test runner", Status: "warn", Detail: i18n.T("doctor.no_test")}
 }

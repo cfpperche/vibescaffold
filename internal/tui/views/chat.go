@@ -12,6 +12,7 @@ import (
 	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/cfpperche/vibeforge/internal/chat"
+	"github.com/cfpperche/vibeforge/internal/i18n"
 	"github.com/cfpperche/vibeforge/internal/tui/styles"
 )
 
@@ -48,7 +49,7 @@ type ChatModel struct {
 
 func NewChat(session *chat.Session) ChatModel {
 	ti := textinput.New()
-	ti.Placeholder = "mensagem ou /help..."
+	ti.Placeholder = i18n.T("chat.placeholder")
 	ti.Focus()
 	ti.CharLimit = 4096
 	ti.Width = 80
@@ -70,15 +71,15 @@ func NewChat(session *chat.Session) ChatModel {
 	// Add welcome message
 	contextFiles := chat.ContextFiles(session.ProjectDir)
 	var welcome strings.Builder
-	welcome.WriteString(fmt.Sprintf("✓ Projeto: %s\n", session.ProjectName))
-	welcome.WriteString(fmt.Sprintf("✓ Agente: %s — pronto\n", session.Agent.Name))
+	welcome.WriteString(i18n.TF("chat.welcome.project", session.ProjectName) + "\n")
+	welcome.WriteString(i18n.TF("chat.welcome.agent", session.Agent.Name) + "\n")
 	if len(contextFiles) > 0 {
-		welcome.WriteString("\nContexto carregado:\n")
+		welcome.WriteString("\n" + i18n.T("chat.welcome.context") + "\n")
 		for _, f := range contextFiles {
-			welcome.WriteString(fmt.Sprintf("  ● %s\n", f))
+			welcome.WriteString(i18n.TF("chat.welcome.context_file", f) + "\n")
 		}
 	}
-	welcome.WriteString("\nDigite sua mensagem ou /help para comandos.")
+	welcome.WriteString("\n" + i18n.T("chat.welcome.instruction"))
 
 	m.entries = append(m.entries, chatEntry{
 		role:    "system",
@@ -111,7 +112,7 @@ func (m ChatModel) Update(msg tea.Msg) (ChatModel, tea.Cmd) {
 			default:
 				m.confirmExit = false
 				m.entries = append(m.entries, chatEntry{
-					role: "system", content: "Saida cancelada.", time: time.Now(),
+					role: "system", content: i18n.T("chat.exit_cancelled"), time: time.Now(),
 				})
 				m.updateViewport()
 				return m, nil
@@ -126,7 +127,7 @@ func (m ChatModel) Update(msg tea.Msg) (ChatModel, tea.Cmd) {
 			}
 			m.confirmExit = true
 			m.entries = append(m.entries, chatEntry{
-				role: "system", content: "Deseja sair? (y/n)", time: time.Now(),
+				role: "system", content: i18n.T("chat.confirm_exit"), time: time.Now(),
 			})
 			m.updateViewport()
 			return m, nil
@@ -157,7 +158,7 @@ func (m ChatModel) Update(msg tea.Msg) (ChatModel, tea.Cmd) {
 		if msg.token.Err != nil {
 			m.streaming = false
 			m.entries = append(m.entries, chatEntry{
-				role: "system", content: fmt.Sprintf("Erro: %s", msg.token.Err), time: time.Now(),
+				role: "system", content: i18n.TF("chat.error", msg.token.Err), time: time.Now(),
 			})
 			m.updateViewport()
 			return m, nil
@@ -213,7 +214,7 @@ func (m ChatModel) handleSubmit() (ChatModel, tea.Cmd) {
 		if result.Output == "__clear__" {
 			m.entries = m.entries[:0]
 			m.entries = append(m.entries, chatEntry{
-				role: "system", content: "Historico limpo.", time: time.Now(),
+				role: "system", content: i18n.T("chat.history_cleared"), time: time.Now(),
 			})
 			m.updateViewport()
 			return m, nil
@@ -298,7 +299,7 @@ func (m *ChatModel) updateViewport() {
 	for _, e := range m.entries {
 		switch e.role {
 		case "user":
-			b.WriteString(styles.Success.Render("  voce: "))
+			b.WriteString(styles.Success.Render(i18n.T("chat.you")))
 			b.WriteString(styles.Title.Render(e.content))
 			b.WriteString("\n\n")
 		case "agent":
@@ -336,9 +337,10 @@ func (m *ChatModel) updateViewport() {
 		b.WriteString(styles.Subtle.Render("▊"))
 		b.WriteString("\n")
 	} else if m.streaming {
-		b.WriteString(fmt.Sprintf("  %s %s pensando...\n",
+		b.WriteString(fmt.Sprintf("  %s %s %s\n",
 			m.spinner.View(),
 			styles.Subtle.Render(m.session.Agent.Name),
+			i18n.T("chat.thinking"),
 		))
 	}
 
@@ -348,7 +350,7 @@ func (m *ChatModel) updateViewport() {
 
 func (m ChatModel) View() string {
 	if m.width == 0 {
-		return "Carregando..."
+		return i18n.T("chat.loading")
 	}
 
 	var b strings.Builder
@@ -366,7 +368,7 @@ func (m ChatModel) View() string {
 		Padding(0, 1).
 		Width(m.width)
 
-	header := fmt.Sprintf(" VibeForge  ●  %s  ●  %s  ●  v0.1",
+	header := i18n.TF("app.header",
 		m.session.ProjectName,
 		agentName,
 	)
@@ -390,7 +392,7 @@ func (m ChatModel) View() string {
 	b.WriteString("\n")
 
 	// Footer
-	footer := styles.Subtle.Render("  /help  /switch  /doctor  /status  /context  /exit")
+	footer := styles.Subtle.Render(i18n.T("chat.footer"))
 	b.WriteString(footer)
 
 	return b.String()

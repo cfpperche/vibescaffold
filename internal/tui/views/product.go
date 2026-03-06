@@ -9,10 +9,11 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/cfpperche/vibeforge/internal/config"
+	"github.com/cfpperche/vibeforge/internal/i18n"
 	"github.com/cfpperche/vibeforge/internal/product/brief"
 	"github.com/cfpperche/vibeforge/internal/product/wizard"
 	"github.com/cfpperche/vibeforge/internal/scaffold"
-	"github.com/cfpperche/vibeforge/internal/config"
 	"github.com/cfpperche/vibeforge/internal/tui/components"
 	"github.com/cfpperche/vibeforge/internal/tui/styles"
 )
@@ -62,13 +63,13 @@ func (m *ProductModel) buildForms() []*huh.Form {
 	forms[0] = huh.NewForm(
 		huh.NewGroup(
 			huh.NewSelect[string]().
-				Title("Voce ja sabe o que quer construir?").
-				Description("Antes de codar, vamos entender o produto.\nO maior erro do vibecoding e pular essa parte.").
+				Title(i18n.T("product.readiness.question")).
+				Description(i18n.T("product.readiness.desc")).
 				Options(
-					huh.NewOption("Tenho ideia clara — so quero estruturar", "clear"),
-					huh.NewOption("Tenho uma direcao — preciso refinar", "refine"),
-					huh.NewOption("Tenho um problema — nao sei a solucao ainda", "problem"),
-					huh.NewOption("Quero explorar — me mostre possibilidades", "explore"),
+					huh.NewOption(i18n.T("product.readiness.clear"), "clear"),
+					huh.NewOption(i18n.T("product.readiness.refine"), "refine"),
+					huh.NewOption(i18n.T("product.readiness.problem"), "problem"),
+					huh.NewOption(i18n.T("product.readiness.explore"), "explore"),
 				).
 				Value(&m.data.Readiness),
 		),
@@ -78,20 +79,20 @@ func (m *ProductModel) buildForms() []*huh.Form {
 	forms[1] = huh.NewForm(
 		huh.NewGroup(
 			huh.NewInput().
-				Title("Nome do projeto").
-				Placeholder("vibeforge").
+				Title(i18n.T("product.name")).
+				Placeholder(i18n.T("product.name.placeholder")).
 				Value(&m.data.Name),
 			huh.NewInput().
-				Title("Tagline — maximo 10 palavras").
-				Description("Deve fazer um nao-dev ficar curioso").
-				Placeholder("Scaffold que pensa no produto antes do codigo").
+				Title(i18n.T("product.tagline")).
+				Description(i18n.T("product.tagline.desc")).
+				Placeholder(i18n.T("product.tagline.placeholder")).
 				Value(&m.data.Tagline),
 			huh.NewSelect[string]().
-				Title("Escala de ambicao").
+				Title(i18n.T("product.scale")).
 				Options(
-					huh.NewOption("Weekend vibe — 2-3 dias, ship e veja se cola", "weekend"),
-					huh.NewOption("Side project — 2-4 semanas, MVP polido", "side"),
-					huh.NewOption("Produto serio — 1-3 meses, monetizacao real", "serious"),
+					huh.NewOption(i18n.T("product.scale.weekend"), "weekend"),
+					huh.NewOption(i18n.T("product.scale.side"), "side"),
+					huh.NewOption(i18n.T("product.scale.serious"), "serious"),
 				).
 				Value(&m.data.Scale),
 		),
@@ -101,17 +102,17 @@ func (m *ProductModel) buildForms() []*huh.Form {
 	forms[2] = huh.NewForm(
 		huh.NewGroup(
 			huh.NewText().
-				Title("Qual dor esse produto resolve?").
-				Description("Seja especifico. 'Developers perdem tempo com X porque Y'").
+				Title(i18n.T("product.problem")).
+				Description(i18n.T("product.problem.desc")).
 				CharLimit(300).
 				Value(&m.data.Problem),
 			huh.NewMultiSelect[string]().
-				Title("Quem deve usar isso?").
+				Title(i18n.T("product.audience")).
 				Options(
-					huh.NewOption("Developers que vibecoding diariamente (core)", "dev_core"),
-					huh.NewOption("Builders nao-tecnicos usando IA (crossover)", "non_tech"),
-					huh.NewOption("Tech Twitter / influenciadores dev (amplificacao)", "influencer"),
-					huh.NewOption("Publico geral — viral alem da bolha dev", "general"),
+					huh.NewOption(i18n.T("product.audience.dev_core"), "dev_core"),
+					huh.NewOption(i18n.T("product.audience.non_tech"), "non_tech"),
+					huh.NewOption(i18n.T("product.audience.influencer"), "influencer"),
+					huh.NewOption(i18n.T("product.audience.general"), "general"),
 				).
 				Value(&m.data.Audience),
 		),
@@ -121,18 +122,18 @@ func (m *ProductModel) buildForms() []*huh.Form {
 	forms[3] = huh.NewForm(
 		huh.NewGroup(
 			huh.NewText().
-				Title("O HOOK — por que alguem tenta na primeira vez?").
-				Description("Deve caber em um tweet. Se nao cabe, e complexo demais.\n\nExemplos:\n  OK: 'Transforma seus commits em uma cidade pixel art'\n  OK: 'Seu AI agent tem um pet que morre se voce parar de codar'\n  Ruim: 'Plataforma de desenvolvimento com IA integrada'").
+				Title(i18n.T("product.hook")).
+				Description(i18n.T("product.hook.desc")).
 				CharLimit(140).
 				Value(&m.data.Hook),
 			huh.NewText().
-				Title("O SHARE TRIGGER — qual momento exato faz compartilhar?").
-				Description("Screenshot? Comparacao? Resultado absurdo? Conquista?\n\nSeja especifico sobre o MOMENTO:\n  OK: 'Quando veem o predio deles maior que o do amigo'\n  Ruim: 'Quando tem uma boa experiencia'").
+				Title(i18n.T("product.share_trigger")).
+				Description(i18n.T("product.share_trigger.desc")).
 				CharLimit(200).
 				Value(&m.data.ShareTrigger),
 			huh.NewText().
-				Title("O LOOP — por que voltam amanha?").
-				Description("O que muda entre hoje e amanha?").
+				Title(i18n.T("product.loop")).
+				Description(i18n.T("product.loop.desc")).
 				CharLimit(200).
 				Value(&m.data.Loop),
 		),
@@ -142,19 +143,19 @@ func (m *ProductModel) buildForms() []*huh.Form {
 	forms[4] = huh.NewForm(
 		huh.NewGroup(
 			huh.NewMultiSelect[string]().
-				Title("Quais mecanicas de engajamento fazem sentido?").
-				Description("Escolha 2-4 que se complementam").
+				Title(i18n.T("product.mechanics")).
+				Description(i18n.T("product.mechanics.desc")).
 				Options(
-					huh.NewOption("Identity Visualization — atividade vira artefato visual", "identity"),
-					huh.NewOption("Idle / Incremental — progresso enquanto voce esta fora", "idle"),
-					huh.NewOption("Streak + Loss Aversion — sequencia diaria com punicao", "streak"),
-					huh.NewOption("Virtual Pet / Companion — criatura que reflete atividade", "pet"),
-					huh.NewOption("Collection / Completionism — gotta catch 'em all", "collection"),
-					huh.NewOption("Competitive Tiers / Leagues — promocao/rebaixamento", "leagues"),
-					huh.NewOption("Body Doubling / Co-presence — trabalha ao lado de outros", "copresence"),
-					huh.NewOption("Spatial / World Metaphor — espaco navegavel", "spatial"),
-					huh.NewOption("Seasonal / Event-driven — FOMO temporal", "seasonal"),
-					huh.NewOption("Build-in-public — processo visivel e compartilhavel", "buildinpublic"),
+					huh.NewOption(i18n.T("product.mechanics.identity"), "identity"),
+					huh.NewOption(i18n.T("product.mechanics.idle"), "idle"),
+					huh.NewOption(i18n.T("product.mechanics.streak"), "streak"),
+					huh.NewOption(i18n.T("product.mechanics.pet"), "pet"),
+					huh.NewOption(i18n.T("product.mechanics.collection"), "collection"),
+					huh.NewOption(i18n.T("product.mechanics.leagues"), "leagues"),
+					huh.NewOption(i18n.T("product.mechanics.copresence"), "copresence"),
+					huh.NewOption(i18n.T("product.mechanics.spatial"), "spatial"),
+					huh.NewOption(i18n.T("product.mechanics.seasonal"), "seasonal"),
+					huh.NewOption(i18n.T("product.mechanics.buildinpublic"), "buildinpublic"),
 				).
 				Value(&m.data.Mechanics),
 		),
@@ -164,19 +165,19 @@ func (m *ProductModel) buildForms() []*huh.Form {
 	forms[5] = huh.NewForm(
 		huh.NewGroup(
 			huh.NewSelect[string]().
-				Title("Modelo de monetizacao inicial").
+				Title(i18n.T("product.monetization")).
 				Options(
-					huh.NewOption("Free forever — cresce por viral, monetiza depois", "free"),
-					huh.NewOption("Freemium — core gratis, features premium pagas", "freemium"),
-					huh.NewOption("Subscription — valor recorrente desde o inicio", "subscription"),
-					huh.NewOption("One-time — paga uma vez, usa sempre", "onetime"),
-					huh.NewOption("B2B / Teams — vende para empresas", "b2b"),
+					huh.NewOption(i18n.T("product.monetization.free"), "free"),
+					huh.NewOption(i18n.T("product.monetization.freemium"), "freemium"),
+					huh.NewOption(i18n.T("product.monetization.subscription"), "subscription"),
+					huh.NewOption(i18n.T("product.monetization.onetime"), "onetime"),
+					huh.NewOption(i18n.T("product.monetization.b2b"), "b2b"),
 				).
 				Value(&m.data.Monetization),
 			huh.NewText().
-				Title("Teste 'Mostre pra sua mae'").
-				Description("Explique em 2 frases para alguem nao-tecnico.\nSe nao consegue, o conceito precisa simplificacao.").
-				Placeholder("Frase 1: O que e.\nFrase 2: Por que e legal.").
+				Title(i18n.T("product.mom_test")).
+				Description(i18n.T("product.mom_test.desc")).
+				Placeholder(i18n.T("product.mom_test.placeholder")).
 				CharLimit(300).
 				Value(&m.data.MomTest),
 		),
@@ -225,7 +226,7 @@ func (m ProductModel) Update(msg tea.Msg) (ProductModel, tea.Cmd) {
 		if msg.String() == "enter" && m.phase == productDone && m.err == nil {
 			dir := m.projectDir
 			name := m.data.Name
-			summary := fmt.Sprintf("Projeto '%s' criado — %d arquivos", name, len(m.files))
+			summary := i18n.TF("product.done_summary", name, len(m.files))
 			return m, func() tea.Msg {
 				return EnterChatMsg{
 					ProjectDir:  dir,
@@ -318,10 +319,10 @@ func (m ProductModel) View() string {
 	case productConfirm:
 		b.WriteString(m.viewConfirm())
 	case productGenerating:
-		b.WriteString(styles.Title.Render("  $ new"))
-		b.WriteString(styles.Subtle.Render("  — gerando produto\n\n"))
+		b.WriteString(styles.Title.Render("  " + i18n.T("product.title")))
+		b.WriteString(styles.Subtle.Render("  " + i18n.T("product.generating_subtitle") + "\n\n"))
 		sp := components.NewSpinner()
-		b.WriteString(fmt.Sprintf("\n  %s Gerando brief e scaffold...\n", sp.View()))
+		b.WriteString(fmt.Sprintf("\n  %s %s\n", sp.View(), i18n.T("product.generating_msg")))
 	case productDone:
 		b.WriteString(m.viewDone())
 	}
@@ -333,15 +334,15 @@ func (m ProductModel) viewWizard() string {
 	var b strings.Builder
 
 	roundLabels := []string{
-		"Aquecimento",
-		"Identidade do produto",
-		"Problema e audiencia",
-		"Hook, Loop e Share Trigger",
-		"Mecanicas de engajamento",
-		"Monetizacao e riscos",
+		i18n.T("product.warmup_title"),
+		i18n.T("product.identity_title"),
+		i18n.T("product.problem_title"),
+		i18n.T("product.hook_title"),
+		i18n.T("product.mechanics_title"),
+		i18n.T("product.monetization_title"),
 	}
 
-	b.WriteString(styles.Title.Render("  $ new"))
+	b.WriteString(styles.Title.Render("  " + i18n.T("product.title")))
 	b.WriteString(styles.Subtle.Render(fmt.Sprintf("  — %s", roundLabels[m.round])))
 	b.WriteString(styles.Subtle.Render(fmt.Sprintf("  (%d/%d)\n\n", m.round+1, len(m.forms))))
 
@@ -365,7 +366,7 @@ func (m ProductModel) viewWizard() string {
 		b.WriteString(m.forms[m.round].View())
 	}
 
-	b.WriteString(components.Footer("  [enter] proximo  [esc] voltar"))
+	b.WriteString(components.Footer(i18n.T("product.wizard_footer")))
 
 	return b.String()
 }
@@ -373,8 +374,8 @@ func (m ProductModel) viewWizard() string {
 func (m ProductModel) viewConfirm() string {
 	var b strings.Builder
 
-	b.WriteString(styles.Title.Render("  $ new"))
-	b.WriteString(styles.Subtle.Render("  — confirmar brief\n\n"))
+	b.WriteString(styles.Title.Render("  " + i18n.T("product.title")))
+	b.WriteString(styles.Subtle.Render("  " + i18n.T("product.confirm_subtitle") + "\n\n"))
 
 	if m.brief == nil {
 		return b.String()
@@ -385,13 +386,13 @@ func (m ProductModel) viewConfirm() string {
 	// Build the confirmation box
 	var lines []string
 
-	lines = append(lines, styles.Title.Bold(true).Render(fmt.Sprintf("Product Brief — %s", br.Name)))
+	lines = append(lines, styles.Title.Bold(true).Render(i18n.TF("product.brief_title", br.Name)))
 	lines = append(lines, "")
 	lines = append(lines, styles.Subtle.Render(fmt.Sprintf("\"%s\"", br.Tagline)))
 	lines = append(lines, "")
 
 	lines = append(lines, fmt.Sprintf("  %s  %s",
-		styles.Subtle.Render("Escala:"),
+		styles.Subtle.Render(i18n.T("product.scale_label")),
 		styles.Title.Render(brief.ScaleLabel(br.Category)),
 	))
 
@@ -403,27 +404,27 @@ func (m ProductModel) viewConfirm() string {
 		}
 	}
 	lines = append(lines, fmt.Sprintf("  %s  %s",
-		styles.Subtle.Render("Audiencia:"),
+		styles.Subtle.Render(i18n.T("product.audience_label")),
 		styles.Title.Render(strings.Join(audLabels, " + ")),
 	))
 	lines = append(lines, "")
 
 	lines = append(lines, fmt.Sprintf("  %s  %s",
-		styles.Success.Render("Hook:"),
+		styles.Success.Render(i18n.T("product.hook_label")),
 		truncateView(br.Hook, 50),
 	))
 	lines = append(lines, fmt.Sprintf("  %s  %s",
-		styles.Warning.Render("Trigger:"),
+		styles.Warning.Render(i18n.T("product.trigger_label")),
 		truncateView(br.ShareTrigger, 50),
 	))
 	lines = append(lines, fmt.Sprintf("  %s  %s",
-		lipgloss.NewStyle().Foreground(lipgloss.Color("#60a5fa")).Render("Loop:"),
+		lipgloss.NewStyle().Foreground(lipgloss.Color("#60a5fa")).Render(i18n.T("product.loop_label")),
 		truncateView(br.Loop.Day1, 50),
 	))
 	lines = append(lines, "")
 
 	// Mechanics
-	lines = append(lines, styles.Subtle.Render("  Mecanicas:"))
+	lines = append(lines, styles.Subtle.Render(i18n.T("product.mechanics_label")))
 	for _, mech := range br.Mechanics {
 		lines = append(lines, fmt.Sprintf("    %s %s",
 			styles.Success.Render("●"),
@@ -435,7 +436,7 @@ func (m ProductModel) viewConfirm() string {
 	// Monetization
 	if len(br.Monetization) > 0 {
 		lines = append(lines, fmt.Sprintf("  %s  %s",
-			styles.Subtle.Render("Monetizacao:"),
+			styles.Subtle.Render(i18n.T("product.monetization_label")),
 			styles.Title.Render(br.Monetization[0].Name),
 		))
 	}
@@ -449,7 +450,7 @@ func (m ProductModel) viewConfirm() string {
 		viralStyle = styles.Warning
 	}
 	lines = append(lines, fmt.Sprintf("  %s  %s",
-		styles.Subtle.Render("Viral:"),
+		styles.Subtle.Render(i18n.T("product.viral_label")),
 		viralStyle.Render(string(br.ViralCoef)),
 	))
 
@@ -458,7 +459,7 @@ func (m ProductModel) viewConfirm() string {
 	b.WriteString(box)
 	b.WriteString("\n\n")
 
-	b.WriteString(components.Footer("  [enter] gerar brief e scaffold  [esc] ajustar"))
+	b.WriteString(components.Footer(i18n.T("product.confirm_footer")))
 
 	return b.String()
 }
@@ -466,28 +467,30 @@ func (m ProductModel) viewConfirm() string {
 func (m ProductModel) viewDone() string {
 	var b strings.Builder
 
-	b.WriteString(styles.Title.Render("  $ new"))
+	b.WriteString(styles.Title.Render("  " + i18n.T("product.title")))
 
 	if m.err != nil {
 		if m.err.Error() == "explore" {
-			b.WriteString(styles.Subtle.Render("  — explorar\n\n"))
-			b.WriteString(styles.Warning.Render("  Para exploracao livre, use o Vibe Forge:\n"))
-			b.WriteString(styles.Subtle.Render("  /spock-vibe-forge no Claude Code\n"))
-			b.WriteString(styles.Subtle.Render("  Ele pesquisa tendencias e gera conceitos virais.\n\n"))
-			b.WriteString(styles.Subtle.Render("  Voltando com uma ideia? Rode: vs new\n"))
-			b.WriteString(components.Footer("  [esc] voltar"))
+			b.WriteString(styles.Subtle.Render("  " + i18n.T("product.explore_subtitle") + "\n\n"))
+			b.WriteString(styles.Warning.Render(i18n.T("product.explore_instruction") + "\n"))
+			b.WriteString(styles.Subtle.Render(i18n.T("product.explore_detail1") + "\n"))
+			b.WriteString(styles.Subtle.Render(i18n.T("product.explore_detail2") + "\n\n"))
+			b.WriteString(styles.Subtle.Render(i18n.T("product.explore_detail3") + "\n"))
+			b.WriteString(components.Footer(i18n.T("product.explore_footer")))
 			return b.String()
 		}
-		b.WriteString(styles.Subtle.Render("  — erro\n\n"))
-		b.WriteString(styles.Error.Render(fmt.Sprintf("\n  Erro: %s\n", m.err)))
-		b.WriteString(components.Footer("  [esc] voltar"))
+		b.WriteString(styles.Subtle.Render("  " + i18n.T("product.error_subtitle") + "\n\n"))
+		b.WriteString(styles.Error.Render(i18n.TF("product.error_msg", m.err)))
+		b.WriteString("\n")
+		b.WriteString(components.Footer(i18n.T("product.error_footer")))
 		return b.String()
 	}
 
-	b.WriteString(styles.Subtle.Render("  — produto criado\n\n"))
-	b.WriteString(styles.Success.Render(fmt.Sprintf("  Projeto '%s' criado!\n\n", m.data.Name)))
+	b.WriteString(styles.Subtle.Render("  " + i18n.T("product.done_subtitle") + "\n\n"))
+	b.WriteString(styles.Success.Render(i18n.TF("product.done_success", m.data.Name)))
+	b.WriteString("\n\n")
 
-	b.WriteString(styles.Subtle.Render("  Arquivos gerados:\n"))
+	b.WriteString(styles.Subtle.Render(i18n.T("product.done_files") + "\n"))
 	for _, f := range m.files {
 		b.WriteString(styles.Success.Render("    + "))
 		b.WriteString(styles.Subtle.Render(f))
@@ -496,10 +499,10 @@ func (m ProductModel) viewDone() string {
 	b.WriteString("\n")
 
 	b.WriteString(styles.Success.Render("  > "))
-	b.WriteString(styles.Title.Render("Pressione [enter] para abrir o chat"))
+	b.WriteString(styles.Title.Render(i18n.T("product.done_press_enter")))
 	b.WriteString("\n")
 
-	b.WriteString(components.Footer("  [enter] abrir chat  [esc] voltar"))
+	b.WriteString(components.Footer(i18n.T("product.done_footer")))
 
 	return b.String()
 }

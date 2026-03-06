@@ -9,6 +9,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/cfpperche/vibeforge/internal/config"
+	"github.com/cfpperche/vibeforge/internal/i18n"
 	"github.com/cfpperche/vibeforge/internal/tui/components"
 	"github.com/cfpperche/vibeforge/internal/tui/styles"
 )
@@ -91,13 +92,13 @@ func (m StatusModel) View() string {
 	var b strings.Builder
 
 	b.WriteString(components.Header())
-	b.WriteString(styles.Title.Render(fmt.Sprintf("  $ status — %s", config.ProjectName())))
+	b.WriteString(styles.Title.Render(i18n.TF("status.title", config.ProjectName())))
 	b.WriteString("\n\n")
 
 	if !m.found {
-		b.WriteString(styles.Warning.Render("  ⚠ docs/ROADMAP.md nao encontrado\n"))
-		b.WriteString(styles.Subtle.Render("  Crie um ROADMAP.md com ## Fase e - [x]/- [ ] tarefas\n"))
-		b.WriteString(components.Footer("  [q] voltar"))
+		b.WriteString(styles.Warning.Render(i18n.T("status.no_roadmap") + "\n"))
+		b.WriteString(styles.Subtle.Render(i18n.T("status.create_roadmap") + "\n"))
+		b.WriteString(components.Footer(i18n.T("status.back_footer")))
 		return b.String()
 	}
 
@@ -139,14 +140,16 @@ func (m StatusModel) View() string {
 		overallFull := totalDone * 10 / totalAll
 		overallEmpty := 10 - overallFull
 		overallBar := strings.Repeat("█", overallFull) + strings.Repeat("░", overallEmpty)
-		b.WriteString(fmt.Sprintf("  Progresso geral: %s  %d%%\n",
+		b.WriteString(i18n.TF("status.overall_progress",
 			styles.Success.Render(overallBar),
 			overallPct,
 		))
+		b.WriteString("\n")
 	}
 
-	b.WriteString(styles.Subtle.Render(fmt.Sprintf("\n  Ultima atualizacao: %s\n", time.Now().Format("2006-01-02"))))
-	b.WriteString(components.Footer("  [r] refresh  [q] voltar"))
+	b.WriteString(styles.Subtle.Render(i18n.TF("status.last_update", time.Now().Format("2006-01-02"))))
+	b.WriteString("\n")
+	b.WriteString(components.Footer(i18n.T("status.footer")))
 
 	return b.String()
 }

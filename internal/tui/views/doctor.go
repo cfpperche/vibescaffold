@@ -7,6 +7,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/cfpperche/vibeforge/internal/config"
 	"github.com/cfpperche/vibeforge/internal/doctor"
+	"github.com/cfpperche/vibeforge/internal/i18n"
 	"github.com/cfpperche/vibeforge/internal/tui/components"
 	"github.com/cfpperche/vibeforge/internal/tui/styles"
 )
@@ -45,7 +46,7 @@ func (m DoctorModel) View() string {
 	var b strings.Builder
 
 	b.WriteString(components.Header())
-	b.WriteString(styles.Title.Render(fmt.Sprintf("  $ doctor — %s", config.ProjectName())))
+	b.WriteString(styles.Title.Render(i18n.TF("doctor.title", config.ProjectName())))
 	b.WriteString("\n\n")
 
 	// Checks
@@ -92,7 +93,7 @@ func (m DoctorModel) View() string {
 		pct,
 	))
 
-	b.WriteString(components.Footer("  [r] refresh  [q] voltar"))
+	b.WriteString(components.Footer(i18n.T("doctor.footer")))
 
 	return b.String()
 }

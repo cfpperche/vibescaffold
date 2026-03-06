@@ -1,7 +1,6 @@
 package views
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -9,6 +8,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/huh"
 	"github.com/cfpperche/vibeforge/internal/config"
+	"github.com/cfpperche/vibeforge/internal/i18n"
 	"github.com/cfpperche/vibeforge/internal/scaffold"
 	"github.com/cfpperche/vibeforge/internal/tui/components"
 	"github.com/cfpperche/vibeforge/internal/tui/styles"
@@ -47,24 +47,24 @@ func NewInit() InitModel {
 	form := huh.NewForm(
 		huh.NewGroup(
 			huh.NewInput().
-				Title("Nome do projeto").
-				Placeholder("meu-projeto").
+				Title(i18n.T("init.field.name")).
+				Placeholder(i18n.T("init.field.name.placeholder")).
 				Value(&cfg.Name),
 			huh.NewInput().
-				Title("Descricao").
-				Placeholder("Descreva seu projeto...").
+				Title(i18n.T("init.field.desc")).
+				Placeholder(i18n.T("init.field.desc.placeholder")).
 				Value(&cfg.Desc),
 			huh.NewInput().
-				Title("Autor").
-				Placeholder("seu-nome").
+				Title(i18n.T("init.field.author")).
+				Placeholder(i18n.T("init.field.author.placeholder")).
 				Value(&cfg.Author),
 			huh.NewConfirm().
-				Title("Criar repo privado no GitHub?").
+				Title(i18n.T("init.field.repo")).
 				Value(&cfg.Repo),
 		),
 		huh.NewGroup(
 			huh.NewSelect[string]().
-				Title("Tipo de projeto").
+				Title(i18n.T("init.field.type")).
 				Options(
 					huh.NewOption("SaaS Web", "saas"),
 					huh.NewOption("API Backend", "api"),
@@ -77,7 +77,7 @@ func NewInit() InitModel {
 		),
 		huh.NewGroup(
 			huh.NewSelect[string]().
-				Title("Stack").
+				Title(i18n.T("init.field.stack")).
 				Options(
 					huh.NewOption("Go + Bubble Tea", "go-bubbletea"),
 					huh.NewOption("Go + Chi", "go-chi"),
@@ -94,7 +94,7 @@ func NewInit() InitModel {
 		),
 		huh.NewGroup(
 			huh.NewMultiSelect[string]().
-				Title("Principios").
+				Title(i18n.T("init.field.principles")).
 				Options(
 					huh.NewOption("TDD", "tdd"),
 					huh.NewOption("Clean Architecture", "clean-arch"),
@@ -109,7 +109,7 @@ func NewInit() InitModel {
 		),
 		huh.NewGroup(
 			huh.NewMultiSelect[string]().
-				Title("Ferramentas Claude").
+				Title(i18n.T("init.field.features")).
 				Options(
 					huh.NewOption("CLAUDE.md (regras)", "claude-md"),
 					huh.NewOption("docs/CONTEXT.md", "context-docs"),
@@ -148,7 +148,7 @@ func (m InitModel) Update(msg tea.Msg) (InitModel, tea.Cmd) {
 			// Transition to chat
 			dir := m.projectDir
 			name := m.cfg.Name
-			summary := fmt.Sprintf("✓ Projeto '%s' scaffolado — %d arquivos criados", name, len(m.files))
+			summary := i18n.TF("init.summary", name, len(m.files))
 			return m, func() tea.Msg {
 				return EnterChatMsg{
 					ProjectDir:  dir,
@@ -190,21 +190,23 @@ func (m InitModel) View() string {
 	var b strings.Builder
 
 	b.WriteString(components.Header())
-	b.WriteString(styles.Title.Render("  $ init"))
-	b.WriteString(styles.Subtle.Render("  — scaffold de projeto\n\n"))
+	b.WriteString(styles.Title.Render("  " + i18n.T("init.title")))
+	b.WriteString(styles.Subtle.Render("  " + i18n.T("init.subtitle") + "\n\n"))
 
 	switch m.phase {
 	case phaseForm:
 		b.WriteString(m.form.View())
 	case phaseGenerating:
 		sp := components.NewSpinner()
-		b.WriteString(fmt.Sprintf("\n  %s Gerando scaffold...\n", sp.View()))
+		b.WriteString(i18n.TF("init.generating", sp.View()) + "\n")
 	case phaseDone:
 		if m.err != nil {
-			b.WriteString(styles.Error.Render(fmt.Sprintf("\n  ✗ Erro: %s\n", m.err)))
+			b.WriteString(styles.Error.Render(i18n.TF("init.error", m.err)))
+			b.WriteString("\n")
 		} else {
-			b.WriteString(styles.Success.Render(fmt.Sprintf("\n  ✓ Projeto '%s' criado!\n\n", m.cfg.Name)))
-			b.WriteString(styles.Subtle.Render("  Arquivos gerados:\n"))
+			b.WriteString(styles.Success.Render(i18n.TF("init.success", m.cfg.Name)))
+			b.WriteString("\n\n")
+			b.WriteString(styles.Subtle.Render(i18n.T("init.files_generated") + "\n"))
 			for _, f := range m.files {
 				b.WriteString(styles.Success.Render("    ✓ "))
 				b.WriteString(styles.Subtle.Render(f))
@@ -212,12 +214,12 @@ func (m InitModel) View() string {
 			}
 			b.WriteString("\n")
 			b.WriteString(styles.Success.Render("  ▸ "))
-			b.WriteString(styles.Title.Render("Pressione [enter] para abrir o chat"))
+			b.WriteString(styles.Title.Render(i18n.T("init.press_enter_chat")))
 			b.WriteString("\n")
 		}
 	}
 
-	b.WriteString(components.Footer("\n  [enter] abrir chat  [esc] voltar"))
+	b.WriteString(components.Footer(i18n.T("init.footer")))
 	return b.String()
 }
 

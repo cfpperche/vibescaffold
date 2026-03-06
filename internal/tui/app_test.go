@@ -1,14 +1,23 @@
 package tui_test
 
 import (
+	"os"
 	"strings"
 	"testing"
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/x/exp/teatest"
+	"github.com/cfpperche/vibeforge/internal/i18n"
+	"github.com/cfpperche/vibeforge/internal/onboarding"
 	"github.com/cfpperche/vibeforge/internal/tui"
 )
+
+func TestMain(m *testing.M) {
+	i18n.Init("en")
+	onboarding.Rebuild()
+	os.Exit(m.Run())
+}
 
 func TestHomeViewRenders(t *testing.T) {
 	tm := teatest.NewTestModel(
@@ -72,8 +81,7 @@ func TestNavigateToDoctor(t *testing.T) {
 		t,
 		tm.Output(),
 		func(bts []byte) bool {
-			// Back at home, or doctor still showing - either way we can quit
-			return strings.Contains(string(bts), "selecionar") || strings.Contains(string(bts), "voltar")
+			return strings.Contains(string(bts), "select") || strings.Contains(string(bts), "back")
 		},
 		teatest.WithDuration(3*time.Second),
 		teatest.WithCheckInterval(100*time.Millisecond),
@@ -118,7 +126,7 @@ func TestNavigateToStatus(t *testing.T) {
 		t,
 		tm.Output(),
 		func(bts []byte) bool {
-			return strings.Contains(string(bts), "selecionar") || strings.Contains(string(bts), "vibeforge")
+			return strings.Contains(string(bts), "select") || strings.Contains(string(bts), "vibeforge")
 		},
 		teatest.WithDuration(3*time.Second),
 		teatest.WithCheckInterval(100*time.Millisecond),
@@ -168,7 +176,7 @@ func TestArrowNavigation(t *testing.T) {
 		t,
 		tm.Output(),
 		func(bts []byte) bool {
-			return strings.Contains(string(bts), "selecionar") || strings.Contains(string(bts), "vibeforge")
+			return strings.Contains(string(bts), "select") || strings.Contains(string(bts), "vibeforge")
 		},
 		teatest.WithDuration(3*time.Second),
 		teatest.WithCheckInterval(100*time.Millisecond),

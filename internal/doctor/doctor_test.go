@@ -6,7 +6,13 @@ import (
 	"testing"
 
 	"github.com/cfpperche/vibeforge/internal/doctor"
+	"github.com/cfpperche/vibeforge/internal/i18n"
 )
+
+func TestMain(m *testing.M) {
+	i18n.Init("en")
+	os.Exit(m.Run())
+}
 
 func TestRunInEmptyDir(t *testing.T) {
 	// Run in temp dir with nothing

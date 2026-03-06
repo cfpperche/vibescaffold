@@ -6,8 +6,14 @@ import (
 	"testing"
 
 	"github.com/cfpperche/vibeforge/internal/config"
+	"github.com/cfpperche/vibeforge/internal/i18n"
 	"github.com/cfpperche/vibeforge/internal/scaffold"
 )
+
+func TestMain(m *testing.M) {
+	i18n.Init("en")
+	os.Exit(m.Run())
+}
 
 func TestScaffoldCreatesFiles(t *testing.T) {
 	tmp := t.TempDir()

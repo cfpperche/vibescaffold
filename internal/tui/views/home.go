@@ -6,6 +6,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/cfpperche/vibeforge/internal/config"
+	"github.com/cfpperche/vibeforge/internal/i18n"
 	"github.com/cfpperche/vibeforge/internal/tui/components"
 	"github.com/cfpperche/vibeforge/internal/tui/styles"
 
@@ -15,16 +16,16 @@ import (
 type menuItem struct {
 	key  string
 	name string
-	desc string
+	desc func() string
 }
 
 var menuItems = []menuItem{
-	{"1", "new", "produto + scaffold completo"},
-	{"2", "init", "scaffold tecnico direto"},
-	{"3", "doctor", "health check"},
-	{"4", "status", "roadmap"},
-	{"5", "agent", "selecionar agente LLM"},
-	{"6", "help", "arquivos e estrutura"},
+	{"1", "new", func() string { return i18n.T("home.menu.new.desc") }},
+	{"2", "init", func() string { return i18n.T("home.menu.init.desc") }},
+	{"3", "doctor", func() string { return i18n.T("home.menu.doctor.desc") }},
+	{"4", "status", func() string { return i18n.T("home.menu.status.desc") }},
+	{"5", "agent", func() string { return i18n.T("home.menu.agent.desc") }},
+	{"6", "help", func() string { return i18n.T("home.menu.help.desc") }},
 }
 
 type HomeModel struct {
@@ -104,7 +105,7 @@ func (m HomeModel) View() string {
 			cursor,
 			style.Render(item.key),
 			style.Bold(true).Render(fmt.Sprintf("%-10s", item.name)),
-			styles.Subtle.Render(item.desc),
+			styles.Subtle.Render(item.desc()),
 		)
 		menuLines = append(menuLines, line)
 	}
@@ -116,10 +117,10 @@ func (m HomeModel) View() string {
 	// Project detection
 	if config.DetectProject() {
 		b.WriteString(styles.Success.Render("  ✓ "))
-		b.WriteString(styles.Subtle.Render(fmt.Sprintf("Projeto detectado: %s", config.ProjectName())))
+		b.WriteString(styles.Subtle.Render(i18n.TF("home.project_detected", config.ProjectName())))
 	} else {
 		b.WriteString(styles.Warning.Render("  ⚠ "))
-		b.WriteString(styles.Subtle.Render("Nenhum projeto detectado nesta pasta"))
+		b.WriteString(styles.Subtle.Render(i18n.T("home.no_project")))
 	}
 	b.WriteString("\n")
 
@@ -132,11 +133,11 @@ func (m HomeModel) View() string {
 			break
 		}
 	}
-	b.WriteString(styles.Subtle.Render("  Agente: "))
+	b.WriteString(styles.Subtle.Render("  " + i18n.T("home.agent_label")))
 	b.WriteString(styles.Success.Render("● " + agentName))
 	b.WriteString("\n")
 
-	b.WriteString(components.Footer("  [1-6] selecionar  [↑↓] navegar  [enter] confirmar  [q] sair"))
+	b.WriteString(components.Footer(i18n.T("home.footer")))
 
 	return b.String()
 }

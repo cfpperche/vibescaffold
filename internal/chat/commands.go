@@ -6,6 +6,7 @@ import (
 
 	"github.com/cfpperche/vibeforge/internal/agent"
 	"github.com/cfpperche/vibeforge/internal/doctor"
+	"github.com/cfpperche/vibeforge/internal/i18n"
 )
 
 type CommandResult struct {
@@ -17,7 +18,7 @@ type CommandResult struct {
 func HandleCommand(session *Session, input string) CommandResult {
 	parts := strings.Fields(input)
 	if len(parts) == 0 {
-		return CommandResult{Output: "comando vazio"}
+		return CommandResult{Output: i18n.T("commands.empty")}
 	}
 
 	cmd := parts[0]
@@ -39,14 +40,14 @@ func HandleCommand(session *Session, input string) CommandResult {
 	case "/help":
 		return handleHelp()
 	default:
-		return CommandResult{Output: fmt.Sprintf("comando desconhecido: %s\nDigite /help para ver comandos disponíveis", cmd)}
+		return CommandResult{Output: i18n.TF("commands.unknown", cmd)}
 	}
 }
 
 func handleSwitch(session *Session, args []string) CommandResult {
 	if len(args) == 0 {
 		var lines []string
-		lines = append(lines, "Uso: /switch <agente> [modelo]")
+		lines = append(lines, i18n.T("commands.switch_usage"))
 		lines = append(lines, "")
 		detected := agent.DetectAll()
 		for _, a := range detected {
@@ -74,10 +75,10 @@ func handleSwitch(session *Session, args []string) CommandResult {
 		if ollamaModel != "" {
 			name += " (" + ollamaModel + ")"
 		}
-		return CommandResult{Output: fmt.Sprintf("● Trocando para %s...\n● Contexto mantido — injetando CONTEXT.md\n● %s ativo", name, name)}
+		return CommandResult{Output: i18n.TF("commands.switch_success", name, name)}
 	}
 
-	return CommandResult{Output: fmt.Sprintf("agente desconhecido: %s", key)}
+	return CommandResult{Output: i18n.TF("commands.switch_unknown", key)}
 }
 
 func handleDoctor(session *Session) CommandResult {
@@ -89,7 +90,7 @@ func handleDoctor(session *Session) CommandResult {
 	}
 
 	var lines []string
-	lines = append(lines, fmt.Sprintf("Doctor — %s", session.ProjectName))
+	lines = append(lines, i18n.TF("commands.doctor_title", session.ProjectName))
 	lines = append(lines, "")
 	for _, c := range checks {
 		icon := "✓"
@@ -102,7 +103,7 @@ func handleDoctor(session *Session) CommandResult {
 		lines = append(lines, fmt.Sprintf("  %s %-24s %s", icon, c.Name, c.Detail))
 	}
 	lines = append(lines, "")
-	lines = append(lines, fmt.Sprintf("  Score: %d/%d (%d%%)", ok, total, pct))
+	lines = append(lines, i18n.TF("commands.score", ok, total, pct))
 
 	return CommandResult{Output: strings.Join(lines, "\n")}
 }
@@ -110,13 +111,13 @@ func handleDoctor(session *Session) CommandResult {
 func handleStatus(session *Session) CommandResult {
 	ctx, err := BuildContext(session.ProjectDir)
 	if err != nil {
-		return CommandResult{Output: "Nenhum arquivo de roadmap encontrado"}
+		return CommandResult{Output: i18n.T("commands.no_roadmap")}
 	}
 	// Just show first 40 lines
 	lines := strings.Split(ctx, "\n")
 	if len(lines) > 40 {
 		lines = lines[:40]
-		lines = append(lines, "... (truncado)")
+		lines = append(lines, i18n.T("chat.truncated"))
 	}
 	return CommandResult{Output: strings.Join(lines, "\n")}
 }
@@ -124,26 +125,19 @@ func handleStatus(session *Session) CommandResult {
 func handleContext(session *Session) CommandResult {
 	files := ContextFiles(session.ProjectDir)
 	if len(files) == 0 {
-		return CommandResult{Output: "Nenhum arquivo de contexto encontrado"}
+		return CommandResult{Output: i18n.T("commands.no_context")}
 	}
 
 	var lines []string
-	lines = append(lines, "Contexto carregado:")
+	lines = append(lines, i18n.T("commands.context_loaded"))
 	for _, f := range files {
-		lines = append(lines, fmt.Sprintf("  ● %s", f))
+		lines = append(lines, i18n.TF("commands.context_file", f))
 	}
 	lines = append(lines, "")
-	lines = append(lines, fmt.Sprintf("Total: %d bytes de contexto", len(session.Context)))
+	lines = append(lines, i18n.TF("commands.context_total", len(session.Context)))
 	return CommandResult{Output: strings.Join(lines, "\n")}
 }
 
 func handleHelp() CommandResult {
-	return CommandResult{Output: `Comandos disponíveis:
-  /switch <agente>    Troca de agente LLM (claude, codex, gemini, ollama, aider)
-  /doctor             Health check do projeto
-  /status             Mostra contexto e roadmap
-  /context            Mostra arquivos de contexto carregados
-  /clear              Limpa o histórico visual
-  /exit               Sai do VibeForge
-  /help               Mostra esta ajuda`}
+	return CommandResult{Output: i18n.T("commands.help")}
 }
