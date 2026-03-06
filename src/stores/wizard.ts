@@ -1,16 +1,17 @@
 import { create } from 'zustand';
 
+export type ProjectType = 'saas' | 'api' | 'game' | 'cli' | 'mobile' | 'lib';
+
 export interface WizardState {
   step: number;
   projectName: string;
   projectDescription: string;
+  projectType: ProjectType;
   frontend: string;
   backend: string;
   database: string;
-  claudeMdRules: string[];
-  hooks: string[];
-  cicd: string;
-  testing: string;
+  principles: string[];
+  claudeTools: string[];
   setStep: (step: number) => void;
   nextStep: () => void;
   prevStep: () => void;
@@ -22,13 +23,17 @@ const initialState = {
   step: 0,
   projectName: '',
   projectDescription: '',
+  projectType: 'saas' as ProjectType,
   frontend: 'react',
   backend: 'node',
   database: 'postgres',
-  claudeMdRules: ['never-commit-without-build', 'never-expose-secrets', 'always-push-after-commit'],
-  hooks: ['pre-commit-lint', 'pre-commit-typecheck'],
-  cicd: 'github-actions',
-  testing: 'vitest',
+  principles: [
+    'never-commit-without-build',
+    'never-expose-secrets',
+    'always-push-after-commit',
+    'tests-before-merge',
+  ],
+  claudeTools: ['claude-md', 'context-docs', 'git-hooks', 'github-actions'],
 };
 
 export const useWizardStore = create<WizardState>((set) => ({
