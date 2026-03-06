@@ -1,37 +1,51 @@
-import type { WizardState } from '../stores/wizard'
+import type { WizardState } from '../stores/wizard';
 
-type Config = Pick<WizardState,
-  'projectName' | 'projectDescription' | 'frontend' | 'backend' |
-  'database' | 'claudeMdRules' | 'hooks' | 'cicd' | 'testing'
->
+type Config = Pick<
+  WizardState,
+  | 'projectName'
+  | 'projectDescription'
+  | 'frontend'
+  | 'backend'
+  | 'database'
+  | 'claudeMdRules'
+  | 'hooks'
+  | 'cicd'
+  | 'testing'
+>;
 
 const FRONTEND_DEPS: Record<string, string> = {
   react: 'react react-dom @vitejs/plugin-react vite typescript',
   vue: 'vue @vitejs/plugin-vue vite typescript',
   svelte: 'svelte @sveltejs/vite-plugin-svelte vite typescript',
-}
+};
 
 const BACKEND_DEPS: Record<string, string> = {
   node: 'express @types/express tsx typescript',
   hono: 'hono @hono/node-server typescript tsx',
   fastify: 'fastify @fastify/cors tsx typescript',
-}
+};
 
 const DB_DEPS: Record<string, string> = {
   postgres: 'pg @types/pg drizzle-orm drizzle-kit',
   sqlite: 'better-sqlite3 @types/better-sqlite3 drizzle-orm drizzle-kit',
   mysql: 'mysql2 drizzle-orm drizzle-kit',
-}
+};
 
 function generateClaudeMd(config: Config): string {
-  const rules = config.claudeMdRules.map((r) => {
-    switch (r) {
-      case 'never-commit-without-build': return '1. NUNCA commite sem build passando'
-      case 'never-expose-secrets': return '2. NUNCA exponha secrets'
-      case 'always-push-after-commit': return '3. SEMPRE git push apos git commit'
-      default: return `- ${r}`
-    }
-  }).join('\n')
+  const rules = config.claudeMdRules
+    .map((r) => {
+      switch (r) {
+        case 'never-commit-without-build':
+          return '1. NUNCA commite sem build passando';
+        case 'never-expose-secrets':
+          return '2. NUNCA exponha secrets';
+        case 'always-push-after-commit':
+          return '3. SEMPRE git push apos git commit';
+        default:
+          return `- ${r}`;
+      }
+    })
+    .join('\n');
 
   return `# ${config.projectName}
 
@@ -50,20 +64,20 @@ ${rules}
 
 ## Workflow
 Tarefa -> le arquivos -> implementa -> npm run build -> commit -> push
-`
+`;
 }
 
 function generateHooks(config: Config): string {
-  const hookLines: string[] = []
+  const hookLines: string[] = [];
   for (const hook of config.hooks) {
     if (hook === 'pre-commit-lint') {
-      hookLines.push('  npx eslint --max-warnings 0 src/')
+      hookLines.push('  npx eslint --max-warnings 0 src/');
     }
     if (hook === 'pre-commit-typecheck') {
-      hookLines.push('  npx tsc --noEmit')
+      hookLines.push('  npx tsc --noEmit');
     }
   }
-  if (hookLines.length === 0) return ''
+  if (hookLines.length === 0) return '';
   return `
 cat > .git/hooks/pre-commit << 'HOOKEOF'
 #!/bin/sh
@@ -71,11 +85,11 @@ set -e
 ${hookLines.join('\n')}
 HOOKEOF
 chmod +x .git/hooks/pre-commit
-`
+`;
 }
 
 function generateCicd(config: Config): string {
-  if (config.cicd !== 'github-actions') return ''
+  if (config.cicd !== 'github-actions') return '';
   return `
 mkdir -p .github/workflows
 cat > .github/workflows/ci.yml << 'CIEOF'
@@ -94,14 +108,14 @@ jobs:
       - run: npm run build
       - run: npm test
 CIEOF
-`
+`;
 }
 
 export function generateScript(config: Config): string {
-  const frontendDeps = FRONTEND_DEPS[config.frontend] ?? ''
-  const backendDeps = BACKEND_DEPS[config.backend] ?? ''
-  const dbDeps = DB_DEPS[config.database] ?? ''
-  const claudeMd = generateClaudeMd(config)
+  const frontendDeps = FRONTEND_DEPS[config.frontend] ?? '';
+  const backendDeps = BACKEND_DEPS[config.backend] ?? '';
+  const dbDeps = DB_DEPS[config.database] ?? '';
+  const claudeMd = generateClaudeMd(config);
 
   return `#!/bin/bash
 set -e
@@ -158,5 +172,5 @@ git commit -m "Initial scaffold by VibeScaffold"
 echo ""
 echo ">>> Project '$PROJECT_NAME' scaffolded successfully!"
 echo ">>> cd $PROJECT_NAME && code ."
-`
+`;
 }

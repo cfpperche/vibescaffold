@@ -1,16 +1,18 @@
-import { useWizardStore } from '../../stores/wizard'
-import { generateScript } from '../../lib/generateScript'
-import { useState } from 'react'
+import { useState } from 'react';
+import { generateScript } from '../../lib/generateScript';
+import { useWizardStore } from '../../stores/wizard';
 
-const STEP_TITLES = ['Projeto', 'Stack', 'Claude MD', 'Hooks & CI', 'Gerar Script']
+const STEP_TITLES = ['Projeto', 'Stack', 'Claude MD', 'Hooks & CI', 'Gerar Script'];
 
 function StepIndicator({ current }: { current: number }) {
   return (
     <div className="mb-10 flex items-center justify-center gap-2">
       {STEP_TITLES.map((title, i) => (
         <div key={title} className="flex items-center gap-2">
-          <div className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold transition
-            ${i === current ? 'bg-primary text-white' : i < current ? 'bg-accent text-surface' : 'bg-surface-lighter text-slate-400'}`}>
+          <div
+            className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold transition
+            ${i === current ? 'bg-primary text-white' : i < current ? 'bg-accent text-surface' : 'bg-surface-lighter text-slate-400'}`}
+          >
             {i < current ? '\u2713' : i + 1}
           </div>
           {i < STEP_TITLES.length - 1 && (
@@ -19,11 +21,11 @@ function StepIndicator({ current }: { current: number }) {
         </div>
       ))}
     </div>
-  )
+  );
 }
 
 function StepProject() {
-  const { projectName, projectDescription, setField } = useWizardStore()
+  const { projectName, projectDescription, setField } = useWizardStore();
   return (
     <div className="space-y-6">
       <div>
@@ -46,17 +48,25 @@ function StepProject() {
         />
       </div>
     </div>
-  )
+  );
 }
 
 const OPTIONS = {
   frontend: ['react', 'vue', 'svelte'],
   backend: ['node', 'hono', 'fastify'],
   database: ['postgres', 'sqlite', 'mysql'],
-}
+};
 
-function SelectGroup({ label, value, options, onChange }: {
-  label: string; value: string; options: string[]; onChange: (v: string) => void
+function SelectGroup({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: string[];
+  onChange: (v: string) => void;
 }) {
   return (
     <div>
@@ -74,38 +84,64 @@ function SelectGroup({ label, value, options, onChange }: {
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 function StepStack() {
-  const { frontend, backend, database, setField } = useWizardStore()
+  const { frontend, backend, database, setField } = useWizardStore();
   return (
     <div className="space-y-6">
-      <SelectGroup label="Frontend" value={frontend} options={OPTIONS.frontend} onChange={(v) => setField('frontend', v)} />
-      <SelectGroup label="Backend" value={backend} options={OPTIONS.backend} onChange={(v) => setField('backend', v)} />
-      <SelectGroup label="Banco de Dados" value={database} options={OPTIONS.database} onChange={(v) => setField('database', v)} />
+      <SelectGroup
+        label="Frontend"
+        value={frontend}
+        options={OPTIONS.frontend}
+        onChange={(v) => setField('frontend', v)}
+      />
+      <SelectGroup
+        label="Backend"
+        value={backend}
+        options={OPTIONS.backend}
+        onChange={(v) => setField('backend', v)}
+      />
+      <SelectGroup
+        label="Banco de Dados"
+        value={database}
+        options={OPTIONS.database}
+        onChange={(v) => setField('database', v)}
+      />
     </div>
-  )
+  );
 }
 
 const RULE_OPTIONS = [
   { id: 'never-commit-without-build', label: 'Nunca commitar sem build' },
   { id: 'never-expose-secrets', label: 'Nunca expor secrets' },
   { id: 'always-push-after-commit', label: 'Sempre push apos commit' },
-]
+];
 
-function CheckboxGroup({ label, selected, options, onChange }: {
-  label: string; selected: string[]; options: { id: string; label: string }[]; onChange: (v: string[]) => void
+function CheckboxGroup({
+  label,
+  selected,
+  options,
+  onChange,
+}: {
+  label: string;
+  selected: string[];
+  options: { id: string; label: string }[];
+  onChange: (v: string[]) => void;
 }) {
   const toggle = (id: string) => {
-    onChange(selected.includes(id) ? selected.filter((s) => s !== id) : [...selected, id])
-  }
+    onChange(selected.includes(id) ? selected.filter((s) => s !== id) : [...selected, id]);
+  };
   return (
     <div>
       <label className="mb-3 block text-sm font-medium text-slate-300">{label}</label>
       <div className="space-y-2">
         {options.map((opt) => (
-          <label key={opt.id} className="flex cursor-pointer items-center gap-3 rounded-lg bg-surface-lighter px-4 py-3">
+          <label
+            key={opt.id}
+            className="flex cursor-pointer items-center gap-3 rounded-lg bg-surface-lighter px-4 py-3"
+          >
             <input
               type="checkbox"
               checked={selected.includes(opt.id)}
@@ -117,44 +153,64 @@ function CheckboxGroup({ label, selected, options, onChange }: {
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 function StepClaudeMd() {
-  const { claudeMdRules, setField } = useWizardStore()
+  const { claudeMdRules, setField } = useWizardStore();
   return (
-    <CheckboxGroup label="Regras do CLAUDE.md" selected={claudeMdRules} options={RULE_OPTIONS} onChange={(v) => setField('claudeMdRules', v)} />
-  )
+    <CheckboxGroup
+      label="Regras do CLAUDE.md"
+      selected={claudeMdRules}
+      options={RULE_OPTIONS}
+      onChange={(v) => setField('claudeMdRules', v)}
+    />
+  );
 }
 
 const HOOK_OPTIONS = [
   { id: 'pre-commit-lint', label: 'Pre-commit: ESLint' },
   { id: 'pre-commit-typecheck', label: 'Pre-commit: TypeScript check' },
-]
-const CICD_OPTIONS = ['github-actions', 'none']
-const TESTING_OPTIONS = ['vitest', 'jest', 'none']
+];
+const CICD_OPTIONS = ['github-actions', 'none'];
+const TESTING_OPTIONS = ['vitest', 'jest', 'none'];
 
 function StepHooks() {
-  const { hooks, cicd, testing, setField } = useWizardStore()
+  const { hooks, cicd, testing, setField } = useWizardStore();
   return (
     <div className="space-y-6">
-      <CheckboxGroup label="Git Hooks" selected={hooks} options={HOOK_OPTIONS} onChange={(v) => setField('hooks', v)} />
-      <SelectGroup label="CI/CD" value={cicd} options={CICD_OPTIONS} onChange={(v) => setField('cicd', v)} />
-      <SelectGroup label="Testing" value={testing} options={TESTING_OPTIONS} onChange={(v) => setField('testing', v)} />
+      <CheckboxGroup
+        label="Git Hooks"
+        selected={hooks}
+        options={HOOK_OPTIONS}
+        onChange={(v) => setField('hooks', v)}
+      />
+      <SelectGroup
+        label="CI/CD"
+        value={cicd}
+        options={CICD_OPTIONS}
+        onChange={(v) => setField('cicd', v)}
+      />
+      <SelectGroup
+        label="Testing"
+        value={testing}
+        options={TESTING_OPTIONS}
+        onChange={(v) => setField('testing', v)}
+      />
     </div>
-  )
+  );
 }
 
 function StepGenerate() {
-  const store = useWizardStore()
-  const [copied, setCopied] = useState(false)
-  const script = generateScript(store)
+  const store = useWizardStore();
+  const [copied, setCopied] = useState(false);
+  const script = generateScript(store);
 
   const copy = () => {
-    navigator.clipboard.writeText(script)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
+    navigator.clipboard.writeText(script);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <div>
@@ -171,21 +227,23 @@ function StepGenerate() {
         {script}
       </pre>
     </div>
-  )
+  );
 }
 
-const STEPS = [StepProject, StepStack, StepClaudeMd, StepHooks, StepGenerate]
+const STEPS = [StepProject, StepStack, StepClaudeMd, StepHooks, StepGenerate];
 
 export function Wizard() {
-  const { step, nextStep, prevStep, projectName } = useWizardStore()
-  const CurrentStep = STEPS[step]
+  const { step, nextStep, prevStep, projectName } = useWizardStore();
+  const CurrentStep = STEPS[step];
 
-  const canNext = step === 0 ? projectName.trim().length > 0 : true
+  const canNext = step === 0 ? projectName.trim().length > 0 : true;
 
   return (
     <div className="mx-auto min-h-screen max-w-2xl px-6 py-12">
       <h1 className="mb-2 text-center text-3xl font-bold text-white">Criar Projeto</h1>
-      <p className="mb-8 text-center text-slate-400">Passo {step + 1} de {STEP_TITLES.length}: {STEP_TITLES[step]}</p>
+      <p className="mb-8 text-center text-slate-400">
+        Passo {step + 1} de {STEP_TITLES.length}: {STEP_TITLES[step]}
+      </p>
 
       <StepIndicator current={step} />
 
@@ -212,5 +270,5 @@ export function Wizard() {
         )}
       </div>
     </div>
-  )
+  );
 }

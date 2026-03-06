@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router';
 
 const features = [
   { title: 'CLAUDE.md', desc: 'Regras e contexto gerados automaticamente para o Claude Code.' },
@@ -7,7 +7,7 @@ const features = [
   { title: 'Stack Completa', desc: 'Frontend, backend, banco de dados e testes em um comando.' },
   { title: 'docs/CONTEXT.md', desc: 'Documentacao de contexto para onboarding do AI.' },
   { title: 'Pronto pra Vibes', desc: 'Cole o script no terminal e comece a vibecoding.' },
-]
+];
 
 export function Landing() {
   return (
@@ -21,8 +21,8 @@ export function Landing() {
           Vibe<span className="text-primary">Scaffold</span>
         </h1>
         <p className="mb-10 max-w-2xl text-lg text-slate-400">
-          Gere um projeto completo com CLAUDE.md, hooks, CI/CD e docs em 5 passos.
-          Cole o script bash no terminal e comece a codar com o Claude Code.
+          Gere um projeto completo com CLAUDE.md, hooks, CI/CD e docs em 5 passos. Cole o script
+          bash no terminal e comece a codar com o Claude Code.
         </p>
         <Link
           to="/wizard"
@@ -68,5 +68,5 @@ export function Landing() {
         VibeScaffold — Scaffold para vibecoding com Claude Code
       </footer>
     </div>
-  )
+  );
 }
