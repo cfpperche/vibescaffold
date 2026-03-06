@@ -6,7 +6,6 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/cfpperche/vibescaffold/internal/chat"
-	"github.com/cfpperche/vibescaffold/internal/onboarding"
 	"github.com/cfpperche/vibescaffold/internal/tui/views"
 )
 
@@ -38,12 +37,8 @@ type Model struct {
 }
 
 func New() Model {
-	startView := viewHome
-	if !onboarding.HasSeen() {
-		startView = viewOnboarding
-	}
 	return Model{
-		currentView: startView,
+		currentView: viewHome,
 		home:        views.NewHome(),
 		init:        views.NewInit(),
 		doctor:      views.NewDoctor(),
@@ -127,7 +122,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.agent.SetSize(m.width, m.height)
 			m.currentView = viewAgent
 			return m, nil
-		case "onboarding":
+		case "help":
 			m.onboarding = views.NewOnboarding()
 			m.onboarding.SetSize(m.width, m.height)
 			m.currentView = viewOnboarding

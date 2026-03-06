@@ -86,7 +86,6 @@ func (m OnboardingModel) Update(msg tea.Msg) (OnboardingModel, tea.Cmd) {
 				}
 			}
 		case "esc", "q":
-			onboarding.MarkSeen()
 			return m, func() tea.Msg { return NavigateMsg{Target: "home"} }
 		}
 	}
@@ -97,9 +96,9 @@ func (m OnboardingModel) View() string {
 	var b strings.Builder
 
 	b.WriteString(components.Header())
-	b.WriteString(styles.Title.Render("  $ onboarding"))
-	b.WriteString(styles.Subtle.Render("  — como funciona\n\n"))
-	b.WriteString(styles.Subtle.Render("  O scaffold cria a estrutura. O agente LLM preenche.\n\n"))
+	b.WriteString(styles.Title.Render("  $ help"))
+	b.WriteString(styles.Subtle.Render("  — arquivos e estrutura\n\n"))
+	b.WriteString(styles.Subtle.Render("  Cada arquivo tem um papel. O scaffold cria, o agente completa.\n\n"))
 
 	// Split: left = file list, right = detail panel
 	leftW := 40

@@ -24,7 +24,7 @@ var menuItems = []menuItem{
 	{"3", "doctor", "health check"},
 	{"4", "status", "roadmap"},
 	{"5", "agent", "selecionar agente LLM"},
-	{"6", "onboarding", "como funciona"},
+	{"6", "help", "arquivos e estrutura"},
 }
 
 type HomeModel struct {
@@ -79,7 +79,7 @@ func (m HomeModel) Update(msg tea.Msg) (HomeModel, tea.Cmd) {
 		case "5":
 			return m, func() tea.Msg { return NavigateMsg{Target: "agent"} }
 		case "6":
-			return m, func() tea.Msg { return NavigateMsg{Target: "onboarding"} }
+			return m, func() tea.Msg { return NavigateMsg{Target: "help"} }
 		}
 	}
 	return m, nil

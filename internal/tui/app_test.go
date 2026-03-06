@@ -1,21 +1,14 @@
 package tui_test
 
 import (
-	"os"
 	"strings"
 	"testing"
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/x/exp/teatest"
-	"github.com/cfpperche/vibescaffold/internal/onboarding"
 	"github.com/cfpperche/vibescaffold/internal/tui"
 )
-
-func TestMain(m *testing.M) {
-	onboarding.MarkSeen()
-	os.Exit(m.Run())
-}
 
 func TestHomeViewRenders(t *testing.T) {
 	tm := teatest.NewTestModel(
