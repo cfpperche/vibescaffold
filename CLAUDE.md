@@ -8,10 +8,20 @@ Gerenciador de contexto para Claude Code, Codex CLI, Gemini CLI.
 Go + Bubble Tea + Bubbles + Lip Gloss + Huh + Cobra
 
 ## Comandos
-- make dev      → roda a TUI
-- make build    → compila para dist/vs
-- make install  → instala globalmente
-- go test ./... → testa tudo
+- make dev        → roda a TUI
+- make build      → compila para dist/vs
+- make install    → instala globalmente
+- make test       → roda todos os testes (teatest + unit)
+- make test-v     → testes verbose
+- make test-update → atualiza golden files
+- make demo       → grava demo GIF com VHS
+- make demo-quick → grava demo curta com VHS
+
+## Testes
+- teatest: testes interativos da TUI (internal/tui/app_test.go)
+- unit: testes de doctor e scaffold
+- golden files: testdata/*.golden (atualizar com -update)
+- VHS tapes: demos/*.tape (geram GIFs para documentacao)
 
 ## Regras
 1. NUNCA commite sem go build passando
