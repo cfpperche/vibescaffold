@@ -1,4 +1,4 @@
-.PHONY: dev build install clean test test-v demo demo-quick
+.PHONY: dev build install clean test test-v test-update demo demo-quick screenshots
 
 dev:
 	go run ./cmd/vs
@@ -24,10 +24,17 @@ test-update:
 	go test ./... -update -timeout 30s
 
 # --- Demos (vhs) ---
+# Requires: vhs, ffmpeg, google-chrome
+# Install vhs: go install github.com/charmbracelet/vhs@latest
+# Install ffmpeg: sudo apt install ffmpeg
 
 demo: build
 	mkdir -p demos/screenshots
-	vhs demos/demo.tape
+	PATH="$(PWD)/dist:$(PATH)" vhs demos/demo.tape
 
 demo-quick: build
-	vhs demos/quick.tape
+	PATH="$(PWD)/dist:$(PATH)" vhs demos/quick.tape
+
+screenshots: build
+	mkdir -p demos/screenshots
+	PATH="$(PWD)/dist:$(PATH)" vhs demos/screenshots.tape
