@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/cfpperche/vibescaffold/internal/doctor"
+	"github.com/cfpperche/vibeforge/internal/doctor"
 )
 
 func TestRunInEmptyDir(t *testing.T) {

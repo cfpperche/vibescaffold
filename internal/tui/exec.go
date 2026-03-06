@@ -4,7 +4,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/cfpperche/vibescaffold/internal/tui/views"
+	"github.com/cfpperche/vibeforge/internal/tui/views"
 )
 
 func launchAgentCmd(msg views.LaunchAgentMsg) *exec.Cmd {

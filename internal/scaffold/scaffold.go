@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/cfpperche/vibescaffold/internal/config"
+	"github.com/cfpperche/vibeforge/internal/config"
 )
 
 var principleLabels = map[string]string{
@@ -151,7 +151,7 @@ func Scaffold(cfg config.Config, targetDir string) ([]string, error) {
 	if err := runInDir(root, "git", "add", "-A"); err != nil {
 		return created, fmt.Errorf("git add: %w", err)
 	}
-	if err := runInDir(root, "git", "commit", "-m", "Initial scaffold by VibeScaffold"); err != nil {
+	if err := runInDir(root, "git", "commit", "-m", "Initial scaffold by VibeForge"); err != nil {
 		return created, fmt.Errorf("git commit: %w", err)
 	}
 

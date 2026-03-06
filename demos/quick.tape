@@ -1,4 +1,4 @@
-# VibeScaffold — Quick Demo (home + navegação)
+# VibeForge — Quick Demo (home + navegação)
 # Run: make demo-quick
 
 Output demos/quick.gif
@@ -17,7 +17,7 @@ Type "cd /tmp && rm -rf vs-quick && mkdir vs-quick && cd vs-quick"
 Enter
 Sleep 500ms
 # Marca onboarding como visto
-Type "mkdir -p ~/.vibescaffold && echo 1 > ~/.vibescaffold/onboarding_seen"
+Type "mkdir -p ~/.vibeforge && echo 1 > ~/.vibeforge/onboarding_seen"
 Enter
 Sleep 500ms
 Show

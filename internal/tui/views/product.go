@@ -9,12 +9,12 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/cfpperche/vibescaffold/internal/product/brief"
-	"github.com/cfpperche/vibescaffold/internal/product/wizard"
-	"github.com/cfpperche/vibescaffold/internal/scaffold"
-	"github.com/cfpperche/vibescaffold/internal/config"
-	"github.com/cfpperche/vibescaffold/internal/tui/components"
-	"github.com/cfpperche/vibescaffold/internal/tui/styles"
+	"github.com/cfpperche/vibeforge/internal/product/brief"
+	"github.com/cfpperche/vibeforge/internal/product/wizard"
+	"github.com/cfpperche/vibeforge/internal/scaffold"
+	"github.com/cfpperche/vibeforge/internal/config"
+	"github.com/cfpperche/vibeforge/internal/tui/components"
+	"github.com/cfpperche/vibeforge/internal/tui/styles"
 )
 
 type productPhase int
@@ -79,7 +79,7 @@ func (m *ProductModel) buildForms() []*huh.Form {
 		huh.NewGroup(
 			huh.NewInput().
 				Title("Nome do projeto").
-				Placeholder("vibescaffold").
+				Placeholder("vibeforge").
 				Value(&m.data.Name),
 			huh.NewInput().
 				Title("Tagline — maximo 10 palavras").

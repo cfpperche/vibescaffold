@@ -18,7 +18,7 @@ type Config struct {
 	Repo       bool     `json:"repo"`
 }
 
-// AppConfig is the global persistent config stored in ~/.vibescaffold/config.json.
+// AppConfig is the global persistent config stored in ~/.vibeforge/config.json.
 type AppConfig struct {
 	ActiveAgent string `json:"active_agent"`
 	OllamaModel string `json:"ollama_model"`
@@ -27,9 +27,9 @@ type AppConfig struct {
 func configDir() string {
 	home, err := os.UserHomeDir()
 	if err != nil {
-		return ".vibescaffold"
+		return ".vibeforge"
 	}
-	return filepath.Join(home, ".vibescaffold")
+	return filepath.Join(home, ".vibeforge")
 }
 
 func configPath() string {

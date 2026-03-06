@@ -1,4 +1,4 @@
-# VibeScaffold — Claude Code
+# VibeForge — Claude Code
 
 ## O que e
 TUI em Go com Bubble Tea para scaffold de projetos de vibecoding.
@@ -77,4 +77,4 @@ Deteccao automatica: se CLAUDE.md existe no cwd, vs abre chat direto.
 - internal/agent/launcher.go — lanca agente com contexto injetado
 - internal/scaffold/ — logica de geracao de projetos
 - internal/doctor/ — health check
-- internal/config/ — config persistida em ~/.vibescaffold/ + deteccao de projeto
+- internal/config/ — config persistida em ~/.vibeforge/ + deteccao de projeto

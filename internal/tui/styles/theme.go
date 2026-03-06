@@ -47,4 +47,4 @@ var (
 		MarginTop(1)
 )
 
-const LogoASCII = `▐▌ vibescaffold`
+const LogoASCII = `▐▌ vibeforge`

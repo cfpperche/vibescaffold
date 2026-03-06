@@ -1,4 +1,4 @@
-module github.com/cfpperche/vibescaffold
+module github.com/cfpperche/vibeforge
 
 go 1.24.2
 

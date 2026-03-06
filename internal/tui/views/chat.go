@@ -11,8 +11,8 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/cfpperche/vibescaffold/internal/chat"
-	"github.com/cfpperche/vibescaffold/internal/tui/styles"
+	"github.com/cfpperche/vibeforge/internal/chat"
+	"github.com/cfpperche/vibeforge/internal/tui/styles"
 )
 
 // ChatMsg types for async operations
@@ -366,7 +366,7 @@ func (m ChatModel) View() string {
 		Padding(0, 1).
 		Width(m.width)
 
-	header := fmt.Sprintf(" VibeScaffold  ●  %s  ●  %s  ●  v0.1",
+	header := fmt.Sprintf(" VibeForge  ●  %s  ●  %s  ●  v0.1",
 		m.session.ProjectName,
 		agentName,
 	)

@@ -1,7 +1,7 @@
 package components
 
 import (
-	"github.com/cfpperche/vibescaffold/internal/tui/styles"
+	"github.com/cfpperche/vibeforge/internal/tui/styles"
 )
 
 func Header() string {

@@ -1,4 +1,4 @@
-# VibeScaffold — Onboarding screenshots
+# VibeForge — Onboarding screenshots
 # Run: make screenshots-onboarding
 # Separate tape because onboarding is first-run only.
 
@@ -10,7 +10,7 @@ Set Theme "Catppuccin Mocha"
 Set Padding 20
 
 Hide
-Type "rm -f ~/.vibescaffold/onboarding_seen"
+Type "rm -f ~/.vibeforge/onboarding_seen"
 Enter
 Sleep 500ms
 Type "rm -rf /tmp/vs-onb && mkdir /tmp/vs-onb && cd /tmp/vs-onb"

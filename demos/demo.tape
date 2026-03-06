@@ -1,4 +1,4 @@
-# VibeScaffold — Full Demo
+# VibeForge — Full Demo
 # Run: make demo
 # Fluxo: onboarding → home → init wizard → scaffold → chat
 
@@ -14,7 +14,7 @@ Set Padding 20
 
 # Setup: dir limpo, reseta onboarding
 Hide
-Type "rm -f ~/.vibescaffold/onboarding_seen"
+Type "rm -f ~/.vibeforge/onboarding_seen"
 Enter
 Sleep 500ms
 Type "cd /tmp && rm -rf vs-demo && mkdir vs-demo && cd vs-demo"

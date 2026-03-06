@@ -7,7 +7,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/x/exp/teatest"
-	"github.com/cfpperche/vibescaffold/internal/tui"
+	"github.com/cfpperche/vibeforge/internal/tui"
 )
 
 func TestHomeViewRenders(t *testing.T) {
@@ -22,7 +22,7 @@ func TestHomeViewRenders(t *testing.T) {
 		t,
 		tm.Output(),
 		func(bts []byte) bool {
-			return strings.Contains(string(bts), "vibescaffold")
+			return strings.Contains(string(bts), "vibeforge")
 		},
 		teatest.WithDuration(3*time.Second),
 		teatest.WithCheckInterval(100*time.Millisecond),
@@ -94,7 +94,7 @@ func TestNavigateToStatus(t *testing.T) {
 		t,
 		tm.Output(),
 		func(bts []byte) bool {
-			return strings.Contains(string(bts), "vibescaffold")
+			return strings.Contains(string(bts), "vibeforge")
 		},
 		teatest.WithDuration(3*time.Second),
 		teatest.WithCheckInterval(100*time.Millisecond),
@@ -118,7 +118,7 @@ func TestNavigateToStatus(t *testing.T) {
 		t,
 		tm.Output(),
 		func(bts []byte) bool {
-			return strings.Contains(string(bts), "selecionar") || strings.Contains(string(bts), "vibescaffold")
+			return strings.Contains(string(bts), "selecionar") || strings.Contains(string(bts), "vibeforge")
 		},
 		teatest.WithDuration(3*time.Second),
 		teatest.WithCheckInterval(100*time.Millisecond),
@@ -168,7 +168,7 @@ func TestArrowNavigation(t *testing.T) {
 		t,
 		tm.Output(),
 		func(bts []byte) bool {
-			return strings.Contains(string(bts), "selecionar") || strings.Contains(string(bts), "vibescaffold")
+			return strings.Contains(string(bts), "selecionar") || strings.Contains(string(bts), "vibeforge")
 		},
 		teatest.WithDuration(3*time.Second),
 		teatest.WithCheckInterval(100*time.Millisecond),
@@ -189,7 +189,7 @@ func TestCtrlCQuits(t *testing.T) {
 		t,
 		tm.Output(),
 		func(bts []byte) bool {
-			return strings.Contains(string(bts), "vibescaffold")
+			return strings.Contains(string(bts), "vibeforge")
 		},
 		teatest.WithDuration(3*time.Second),
 		teatest.WithCheckInterval(100*time.Millisecond),

@@ -4,7 +4,7 @@ import "os"
 
 func configDir() string {
 	home, _ := os.UserHomeDir()
-	return home + "/.vibescaffold"
+	return home + "/.vibeforge"
 }
 
 func HasSeen() bool {

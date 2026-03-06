@@ -23,10 +23,10 @@ rm -rf "$PLAYGROUND"
 mkdir -p "$PLAYGROUND"
 
 # Remove flag de onboarding para testar first-run
-rm -f ~/.vibescaffold/onboarding_seen
+rm -f ~/.vibeforge/onboarding_seen
 
 echo "╔══════════════════════════════════════════╗"
-echo "║  VibeScaffold Playground                 ║"
+echo "║  VibeForge Playground                 ║"
 echo "║                                          ║"
 echo "║  Diretório: .playground/                 ║"
 echo "║  Onboarding: resetado                    ║"

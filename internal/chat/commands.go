@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cfpperche/vibescaffold/internal/agent"
-	"github.com/cfpperche/vibescaffold/internal/doctor"
+	"github.com/cfpperche/vibeforge/internal/agent"
+	"github.com/cfpperche/vibeforge/internal/doctor"
 )
 
 type CommandResult struct {
@@ -144,6 +144,6 @@ func handleHelp() CommandResult {
   /status             Mostra contexto e roadmap
   /context            Mostra arquivos de contexto carregados
   /clear              Limpa o histórico visual
-  /exit               Sai do VibeScaffold
+  /exit               Sai do VibeForge
   /help               Mostra esta ajuda`}
 }

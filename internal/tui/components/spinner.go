@@ -2,7 +2,7 @@ package components
 
 import (
 	"github.com/charmbracelet/bubbles/spinner"
-	"github.com/cfpperche/vibescaffold/internal/tui/styles"
+	"github.com/cfpperche/vibeforge/internal/tui/styles"
 )
 
 func NewSpinner() spinner.Model {

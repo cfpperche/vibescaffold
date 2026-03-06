@@ -8,10 +8,10 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/huh"
-	"github.com/cfpperche/vibescaffold/internal/config"
-	"github.com/cfpperche/vibescaffold/internal/scaffold"
-	"github.com/cfpperche/vibescaffold/internal/tui/components"
-	"github.com/cfpperche/vibescaffold/internal/tui/styles"
+	"github.com/cfpperche/vibeforge/internal/config"
+	"github.com/cfpperche/vibeforge/internal/scaffold"
+	"github.com/cfpperche/vibeforge/internal/tui/components"
+	"github.com/cfpperche/vibeforge/internal/tui/styles"
 )
 
 type initPhase int

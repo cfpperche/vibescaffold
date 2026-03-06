@@ -5,10 +5,10 @@ import (
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/cfpperche/vibescaffold/internal/config"
-	"github.com/cfpperche/vibescaffold/internal/doctor"
-	"github.com/cfpperche/vibescaffold/internal/tui/components"
-	"github.com/cfpperche/vibescaffold/internal/tui/styles"
+	"github.com/cfpperche/vibeforge/internal/config"
+	"github.com/cfpperche/vibeforge/internal/doctor"
+	"github.com/cfpperche/vibeforge/internal/tui/components"
+	"github.com/cfpperche/vibeforge/internal/tui/styles"
 )
 
 type DoctorModel struct {

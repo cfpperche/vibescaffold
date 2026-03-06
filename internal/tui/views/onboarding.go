@@ -6,9 +6,9 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/cfpperche/vibescaffold/internal/onboarding"
-	"github.com/cfpperche/vibescaffold/internal/tui/components"
-	"github.com/cfpperche/vibescaffold/internal/tui/styles"
+	"github.com/cfpperche/vibeforge/internal/onboarding"
+	"github.com/cfpperche/vibeforge/internal/tui/components"
+	"github.com/cfpperche/vibeforge/internal/tui/styles"
 )
 
 const onboardingListHeight = 20 // visible rows in the file list

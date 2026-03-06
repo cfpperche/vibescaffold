@@ -3,7 +3,7 @@ package wizard
 import (
 	"strings"
 
-	"github.com/cfpperche/vibescaffold/internal/product/brief"
+	"github.com/cfpperche/vibeforge/internal/product/brief"
 )
 
 // ReadinessLevel indicates how ready the user is.

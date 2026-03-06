@@ -6,8 +6,8 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/cfpperche/vibescaffold/internal/config"
-	"github.com/cfpperche/vibescaffold/internal/tui"
+	"github.com/cfpperche/vibeforge/internal/config"
+	"github.com/cfpperche/vibeforge/internal/tui"
 )
 
 func main() {

@@ -3,8 +3,8 @@ package chat
 import (
 	"time"
 
-	"github.com/cfpperche/vibescaffold/internal/agent"
-	"github.com/cfpperche/vibescaffold/internal/config"
+	"github.com/cfpperche/vibeforge/internal/agent"
+	"github.com/cfpperche/vibeforge/internal/config"
 )
 
 type Message struct {

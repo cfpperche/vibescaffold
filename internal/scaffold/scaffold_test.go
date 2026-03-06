@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/cfpperche/vibescaffold/internal/config"
-	"github.com/cfpperche/vibescaffold/internal/scaffold"
+	"github.com/cfpperche/vibeforge/internal/config"
+	"github.com/cfpperche/vibeforge/internal/scaffold"
 )
 
 func TestScaffoldCreatesFiles(t *testing.T) {

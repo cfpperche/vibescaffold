@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/cfpperche/vibescaffold/internal/chat"
-	"github.com/cfpperche/vibescaffold/internal/tui/views"
+	"github.com/cfpperche/vibeforge/internal/chat"
+	"github.com/cfpperche/vibeforge/internal/tui/views"
 )
 
 type view int

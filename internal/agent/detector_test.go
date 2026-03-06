@@ -3,7 +3,7 @@ package agent_test
 import (
 	"testing"
 
-	"github.com/cfpperche/vibescaffold/internal/agent"
+	"github.com/cfpperche/vibeforge/internal/agent"
 )
 
 func TestDetectAllReturnsAllAgents(t *testing.T) {
