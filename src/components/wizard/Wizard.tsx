@@ -71,14 +71,46 @@ const PROJECT_TYPES: { id: ProjectType; label: string; icon: string }[] = [
   { id: 'lib', label: 'Library', icon: '*' },
 ];
 
-const STACK_OPTIONS: Record<string, { label: string; options: string[] }> = {
-  frontend: { label: 'Frontend', options: ['react', 'vue', 'svelte', 'next', 'none'] },
-  backend: { label: 'Backend', options: ['node', 'hono', 'fastify', 'none'] },
-  database: { label: 'Database', options: ['postgres', 'sqlite', 'mysql', 'none'] },
-};
+function OptionRow({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: string[];
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div>
+      <span className="mb-2 block text-xs text-neutral-500">{label}</span>
+      <div className="flex flex-wrap gap-2">
+        {options.map((opt) => (
+          <button
+            key={opt}
+            type="button"
+            onClick={() => onChange(opt)}
+            className={`rounded-md border px-3 py-1.5 text-xs font-medium capitalize transition
+              ${value === opt
+                ? 'border-neon/50 bg-neon/10 text-neon'
+                : 'border-surface-border text-neutral-500 hover:border-neutral-600 hover:text-neutral-300'}`}
+          >
+            {opt}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function StepTypeAndStack() {
-  const { projectType, frontend, backend, database, setField } = useWizardStore();
+  const { projectType, runtime, linter, frontend, backend, database, setField } = useWizardStore();
+
+  const backendOptions = runtime === 'bun'
+    ? ['hono', 'elysia', 'fastify', 'none']
+    : ['node', 'hono', 'fastify', 'none'];
+
   return (
     <div className="space-y-6">
       <div>
@@ -104,31 +136,23 @@ function StepTypeAndStack() {
       </div>
 
       <div className="border-t border-surface-border pt-5">
+        <span className="mb-3 block text-xs font-semibold uppercase tracking-wider text-neon/70">Opcoes do Projeto</span>
+        <div className="space-y-4">
+          <OptionRow label="Runtime" value={runtime} options={['bun', 'node']} onChange={(v) => {
+            setField('runtime', v as 'bun' | 'node');
+            if (v === 'node' && (backend === 'elysia')) setField('backend', 'node');
+            if (v === 'bun' && backend === 'node') setField('backend', 'hono');
+          }} />
+          <OptionRow label="Linter / Formatter" value={linter} options={['biome', 'eslint-prettier']} onChange={(v) => setField('linter', v as 'biome' | 'eslint-prettier')} />
+        </div>
+      </div>
+
+      <div className="border-t border-surface-border pt-5">
         <span className="mb-3 block text-xs font-semibold uppercase tracking-wider text-neon/70">Stack</span>
         <div className="space-y-4">
-          {Object.entries(STACK_OPTIONS).map(([key, { label, options }]) => {
-            const current = key === 'frontend' ? frontend : key === 'backend' ? backend : database;
-            return (
-              <div key={key}>
-                <span className="mb-2 block text-xs text-neutral-500">{label}</span>
-                <div className="flex flex-wrap gap-2">
-                  {options.map((opt) => (
-                    <button
-                      key={opt}
-                      type="button"
-                      onClick={() => setField(key as 'frontend' | 'backend' | 'database', opt)}
-                      className={`rounded-md border px-3 py-1.5 text-xs font-medium capitalize transition
-                        ${current === opt
-                          ? 'border-neon/50 bg-neon/10 text-neon'
-                          : 'border-surface-border text-neutral-500 hover:border-neutral-600 hover:text-neutral-300'}`}
-                    >
-                      {opt}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
+          <OptionRow label="Frontend" value={frontend} options={['react', 'vue', 'svelte', 'next', 'none']} onChange={(v) => setField('frontend', v)} />
+          <OptionRow label="Backend" value={backend} options={backendOptions} onChange={(v) => setField('backend', v)} />
+          <OptionRow label="Database" value={database} options={['postgres', 'sqlite', 'mysql', 'none']} onChange={(v) => setField('database', v)} />
         </div>
       </div>
     </div>
