@@ -39,6 +39,13 @@ type NavigateMsg struct {
 	Target string
 }
 
+// EnterChatMsg signals the app to enter chat mode for a project.
+type EnterChatMsg struct {
+	ProjectDir  string
+	ProjectName string
+	Summary     string // scaffold summary
+}
+
 func (m HomeModel) Init() tea.Cmd {
 	return nil
 }

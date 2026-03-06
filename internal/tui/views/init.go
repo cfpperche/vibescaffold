@@ -2,6 +2,8 @@ package views
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -21,18 +23,20 @@ const (
 )
 
 type scaffoldDoneMsg struct {
-	files []string
-	err   error
+	files      []string
+	err        error
+	projectDir string
 }
 
 type InitModel struct {
-	width  int
-	height int
-	phase  initPhase
-	form   *huh.Form
-	cfg    config.Config
-	files  []string
-	err    error
+	width      int
+	height     int
+	phase      initPhase
+	form       *huh.Form
+	cfg        config.Config
+	files      []string
+	err        error
+	projectDir string
 }
 
 func NewInit() InitModel {
@@ -135,12 +139,29 @@ func (m InitModel) Update(msg tea.Msg) (InitModel, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		if msg.String() == "esc" && m.phase != phaseGenerating {
+			if m.phase == phaseDone {
+				return m, func() tea.Msg { return NavigateMsg{Target: "home"} }
+			}
 			return m, func() tea.Msg { return NavigateMsg{Target: "home"} }
+		}
+		if msg.String() == "enter" && m.phase == phaseDone && m.err == nil {
+			// Transition to chat
+			dir := m.projectDir
+			name := m.cfg.Name
+			summary := fmt.Sprintf("✓ Projeto '%s' scaffolado — %d arquivos criados", name, len(m.files))
+			return m, func() tea.Msg {
+				return EnterChatMsg{
+					ProjectDir:  dir,
+					ProjectName: name,
+					Summary:     summary,
+				}
+			}
 		}
 	case scaffoldDoneMsg:
 		m.phase = phaseDone
 		m.files = msg.files
 		m.err = msg.err
+		m.projectDir = msg.projectDir
 		return m, nil
 	}
 
@@ -153,11 +174,10 @@ func (m InitModel) Update(msg tea.Msg) (InitModel, tea.Cmd) {
 			m.phase = phaseGenerating
 			cfg := m.cfg
 			return m, func() tea.Msg {
-				dir, _ := fmt.Printf("")
-				_ = dir
-				cwd := "."
+				cwd, _ := os.Getwd()
 				files, err := scaffold.Scaffold(cfg, cwd)
-				return scaffoldDoneMsg{files: files, err: err}
+				projectDir := filepath.Join(cwd, cfg.Name)
+				return scaffoldDoneMsg{files: files, err: err, projectDir: projectDir}
 			}
 		}
 		return m, cmd
@@ -190,11 +210,14 @@ func (m InitModel) View() string {
 				b.WriteString(styles.Subtle.Render(f))
 				b.WriteString("\n")
 			}
-			b.WriteString(fmt.Sprintf("\n  %s\n", styles.Subtle.Render(fmt.Sprintf("cd %s && claude", m.cfg.Name))))
+			b.WriteString("\n")
+			b.WriteString(styles.Success.Render("  ▸ "))
+			b.WriteString(styles.Title.Render("Pressione [enter] para abrir o chat"))
+			b.WriteString("\n")
 		}
 	}
 
-	b.WriteString(components.Footer("\n  [esc] voltar"))
+	b.WriteString(components.Footer("\n  [enter] abrir chat  [esc] voltar"))
 	return b.String()
 }
 

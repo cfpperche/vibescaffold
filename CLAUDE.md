@@ -34,10 +34,29 @@ Go + Bubble Tea + Bubbles + Lip Gloss + Huh + Cobra
 msg → Update() → cmd → View()
 Cada view implementa: Init() / Update() / View()
 
+## Arquitetura do Chat
+
+O chat e o coracao do produto. Apos init, o terminal vira
+um ambiente persistente que vive durante todo o desenvolvimento.
+
+Fluxo: input do usuario → IsCommand? → HandleCommand()
+                                     → Send() → RunAgent() → stream → viewport
+
+Pacotes:
+- internal/chat/session.go   → estado da sessao
+- internal/chat/runner.go    → executa agente como processo filho ou API (Ollama)
+- internal/chat/context.go   → build e injecao de contexto
+- internal/chat/commands.go  → /switch /doctor /status /context /clear /exit /help
+- internal/tui/views/chat.go → UI do chat com streaming
+
+Deteccao automatica: se CLAUDE.md existe no cwd, vs abre chat direto.
+
 ## Estrutura
-- cmd/vs/main.go — entry point
+- cmd/vs/main.go — entry point (detecta projeto → chat ou home)
 - internal/tui/ — modelo principal + views + components + styles
+- internal/tui/views/chat.go — chat persistente com streaming
 - internal/tui/views/agent.go — seletor de agente LLM
+- internal/chat/ — sessao, runner, contexto, comandos
 - internal/agent/detector.go — detecta binarios instalados (claude, codex, gemini, ollama, aider)
 - internal/agent/launcher.go — lanca agente com contexto injetado
 - internal/scaffold/ — logica de geracao de projetos

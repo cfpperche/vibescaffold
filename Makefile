@@ -30,11 +30,11 @@ test-update:
 
 demo: build
 	mkdir -p demos/screenshots
-	PATH="$(PWD)/dist:$(PATH)" vhs demos/demo.tape
+	PATH="$(PWD)/dist:$(HOME)/bin:$(PATH)" vhs demos/demo.tape
 
 demo-quick: build
-	PATH="$(PWD)/dist:$(PATH)" vhs demos/quick.tape
+	PATH="$(PWD)/dist:$(HOME)/bin:$(PATH)" vhs demos/quick.tape
 
 screenshots: build
 	mkdir -p demos/screenshots
-	PATH="$(PWD)/dist:$(PATH)" vhs demos/screenshots.tape
+	PATH="$(PWD)/dist:$(HOME)/bin:$(PATH)" vhs demos/screenshots.tape
